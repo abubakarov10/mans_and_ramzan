@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views  # <- обязательно импортируем views
+from . import views
 
-app_name = 'products'  # пространство имён приложения
+app_name = 'products'
 
 urlpatterns = [
     path('', views.product_list, name='list'),
@@ -9,3 +9,4 @@ urlpatterns = [
     path('<int:pk>/edit/', views.product_edit, name='edit'),
     path('<int:pk>/delete/', views.product_delete, name='delete'),
 ]
+

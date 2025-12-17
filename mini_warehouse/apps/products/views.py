@@ -1,14 +1,41 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product
+from .forms import ProductForm
+
 
 def product_list(request):
-    return render(request, 'products/list.html', {})
+    products = Product.objects.all()
+    return render(request, 'products/list.html', {'products': products})
+
 
 def product_create(request):
-    return render(request, 'products/form.html', {})
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('products:list')
+    else:
+        form = ProductForm()
+
+    return render(request, 'products/form.html', {'form': form})
 
 def product_edit(request, pk):
-    return render(request, 'products/form.html', {})
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('products:list')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'products/form.html', {'form': form})
+
 
 def product_delete(request, pk):
-    return render(request, 'products/list.html', {})
+    product = get_object_or_404(Product, pk=pk)
+    product.delete()
+    return redirect('products:list')
+
 
