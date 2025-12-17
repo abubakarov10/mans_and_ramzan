@@ -3,33 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>SuRam Alpha 0.1</title>
-    {% load static %}
-    <link rel="stylesheet" href=""> /* ../static/css/style.css */
+    <link rel="stylesheet" href="../static/css/style.css">
     <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 <body>
-    <nav class="navigator">
-        <a href="#" class="logo">
-            <div class="nav-links">🚀</div>
-            <div class="nav-links">SuRam</div>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="#" class="container-logo">
+            <div class="logo-icon">🚀</div>
+            <div class="logo-text">SuRam</div>
         </a>
+            <!-- Меню -->
+            <div class="desktop-menu">
+                <ul class="nav-list">
+                    <li><a href="#" class="home"><i class="fas fa-home"></i> Главная</a></li>
+                    <li><a href="#products" class="nav-link"><i class="products-nav">Товары</i></a></li>
+                    <li><a href="#sales" class="nav-link"><i class="sales-nav">Продажи</i></a></li>
+                    <li><a href="#reports" class="nav-link"><i class="reports-nav">Отчеты</i></a></li>
+                    <li><button class="btn_project" id="addBtnProject"><i class="add-product"></i>Добавить</button></li>
+                </ul>
+            </div>
     </nav>
 
-    <div class="menu">
-        <ul class="nav-list">
-            <li><a href="#" class="active-link"><i class="home">Главная</i></a></li>
-            <li><a href="#products" class="nav-linkk"><i class="Products-nav">Товары</i></a></li>
-            <li><a href="#sales" class="nav-link"><i class="sales-nav">Продажи</i></a></li>
-            <li><a href="#reports" class="nav-link"><i class="reports-nav">Отчеты</i></a></li>
-            <li><button class="btn_project" id="addBtnProject"><i class="add-product"></i>Добавить товар</button></li>
-        </ul>
+    <!-- Главное меню -->
+    <section class="main-menu">
+        <div class="main-menu-content"></div>
+        <div class="container">
+            <h1 class="fade">Цифровой склад для вашего бизнеса<br></h1>
+            <p class="fade">
+                Превратите хаос учета в понятную систему. Добавляйте товары, фиксируйте продажи, анализируйте прибыль — все в одном интерфейсе, доступном с любого устройства.
+            </p>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <div class="container">
+        <div class="statistics">
+            <div class="stat-card fade-in">
+                <div class="stat-icon">📦</div>
+                <div class="stat-value">???</div>
+                <div class="stat-label">Товаров в системе</div>
+            </div>
+        </div>
+
+        <div class="stat-card fade-in">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value">???</div>
+            <div class="stat-label">Выручка сегодня</div>
+        </div>
+
+        <div class="stat-card fade-in">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">???</div>
+            <div class="stat-label">Эффективность</div>
+        </div>
+
+        <div class="stat-card dade-in">
+            <div class="stat-icon">🚚</div>
+            <div class="stat-value">???</div>
+            <div class="stat-label">Продаж за день</div>
+        </div>
     </div>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-    <footer>
-        <p>SuRam 8</p>
+
+        <!-- Футер -->
+        <footer class="footer-info">
+        <div class="footer-features">
+            <p class="feature">📱 Адаптивный дизайн</p>
+            <p class="feature">🔒 Безопасность данных</p>
+            <p class="feature">⚡ Быстрая загрузка</p>
+            <p class="rights">© 2025 SuRam. Все права защищены.</p>
+        </div>
     </footer>
 </body>
 </html>
