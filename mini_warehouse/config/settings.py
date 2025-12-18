@@ -54,13 +54,18 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'],  # <-- добавляем путь к общей папке templates
+        'APP_DIRS': True,  # <-- ищет templates в каждом приложении
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -68,6 +73,9 @@ TEMPLATES = [
         },
     },
 ]
+
+STATICFILES_DIRS = [BASE_DIR / 'static']  # <-- папка с css и js твоего друга
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -117,7 +125,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 TEMPLATES = [
     {
@@ -134,4 +142,5 @@ TEMPLATES = [
         },
     },
 ]
+
 

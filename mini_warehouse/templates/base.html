@@ -1,12 +1,17 @@
-<!DOCTYPE html>
+{% load static %}
+
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>SuRam Alpha 0.1</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <script src="{% static 'js/main.js' %}" defer></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/snow.js' %}" defer></script>
+
+
 </head>
-<body>
+<body><script src="{% static 'js/snow.js' %}"></script>
+
     <!-- Навигация -->
     <nav class="navbar">
         <a href="#" class="container-logo">
@@ -41,7 +46,8 @@
         <div class="statistics">
             <div class="stat-card fade-in">
                 <div class="stat-icon">📦</div>
-                <div class="stat-value">???</div>
+                <div class="stat-value">{{ total_products }}</div>
+
                 <div class="stat-label">Товаров в системе</div>
             </div>
         </div>

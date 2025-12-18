@@ -1,8 +1,9 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1>Список товаров</h1>
+<h2>Список товаров</h2>
 <a class="button" href="{% url 'products:new' %}">Добавить товар</a>
+
 <table>
     <thead>
         <tr>
@@ -14,7 +15,6 @@
         </tr>
     </thead>
     <tbody>
-
         {% for product in products %}
         <tr>
             <td>{{ product.name }}</td>
@@ -22,13 +22,15 @@
             <td>{{ product.purchase_price }}</td>
             <td>{{ product.sale_price }}</td>
             <td>
-                <a class="button" href="{% url 'products:edit' product.id %}">Редактировать</a>
+                <a class="button edit" href="{% url 'products:edit' product.id %}">Изменить</a>
                 <form action="{% url 'products:delete' product.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
-                    <button class="button" type="submit">Удалить</button>
+                    <button class="button delete" type="submit">Удалить</button>
                 </form>
             </td>
         </tr>
+        {% empty %}
+        <tr><td colspan="5">Товаров пока нет</td></tr>
         {% endfor %}
     </tbody>
 </table>

@@ -1,10 +1,9 @@
 from django.contrib import admin
-from django.urls import path, include  # подключаем include для приложений
+from django.urls import path, include
+from apps.products import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.products.urls')),   # главная страница → список товаров
+    path('', views.product_list, name='home'),  # Главная показывает список товаров
     path('products/', include('apps.products.urls')),
-    path('sales/', include('apps.sales.urls')),
-    path('reports/', include('apps.reports.urls')),
 ]
