@@ -1,278 +1,469 @@
+/* ===== НОВОГОДНЯЯ ТЕМА ===== */
 :root {
-    --primary: #6C63FF;
-    --primary-dark: #5249D9;
-    --secondary: #FF6584;
-    --accent: #36D1DC;
-    --success: #4CD964;
-    --warning: #FF9500;
-    --danger: #FF3B30;
-    --dark: #121826;
-    --darker: #0A0E17;
-    --light: #F8F9FA;
+    /* Новогодние цвета */
+    --newyear-red: #FF6B6B;
+    --newyear-green: #51CF66;
+    --newyear-gold: #FFD93D;
+    --newyear-blue: #4D96FF;
+    --newyear-white: #F8F9FA;
+
+    /* Тёмная тема (по умолчанию) */
+    --primary: var(--newyear-red);
+    --primary-dark: #E85959;
+    --secondary: var(--newyear-green);
+    --accent: var(--newyear-gold);
+    --success: var(--newyear-green);
+    --warning: #FFA94D;
+    --danger: #FF6B6B;
+    --dark: #0A0E17;
+    --darker: #05111F;
+    --light: var(--newyear-white);
     --gray: #8E94A5;
-    --glass: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --glass: rgba(255, 255, 255, 0.07);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-bg-hover: rgba(255, 255, 255, 0.1);
-    --primary-color: #6C63FF;
+    --border-radius: 15px;
 }
 
+/* ===== ОСНОВНЫЕ СТИЛИ ===== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
-/* Тело */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
     color: var(--light);
     min-height: 100vh;
-    line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
 }
 
-/* Контейнеры */
 .container {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 0 16px;
-    }
-}
-
-/* Главный экран */
-.main-menu {
-    padding: 4rem 0;
-    text-align: center;
     position: relative;
-    overflow: hidden;
+    z-index: 1;
 }
 
-@media (max-width: 768px) {
-    .main-menu {
-        padding: 6rem 0;
-    }
-}
-
-.main-menu-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 20% 50%, rgba(108, 99, 255, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 101, 132, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(54, 209, 220, 0.1) 0%, transparent 50%);
-    z-index: -1;
-}
-
-.main-menu h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(45deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1.2;
-}
-
-.main-menu p {
-    font-size: 1.2rem;
-    color: var(--gray);
-    max-width: 600px;
-    margin: 0 auto 3rem;
-}
-
-@media (min-width: 768px) {
-    .main-menu h1 {
-        font-size: 3.5rem;
-    }
-}
-
-/* Футер */
-.footer-info {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--glass-border);
-}
-
-.footer-features {
-    color: var(--gray);
-    font-size: 0.9rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    min-height: 60px;
-}
-
-.footer-features .feature {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--glass-bg);
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-}
-
-.footer-features .feature:hover {
-    background: var(--glass-bg-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-}
-
-.footer-features .rights {
-    /* Позиционирование */
-    position: absolute;
-    bottom: -50px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-weight: 600;
-    color: var(--primary-color);
-
-    /* Стили */
-    padding: 12px 25px;
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(155, 89, 182, 0.1));
-    border-radius: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-
-    /* Иконка перед текстом */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: fit-content;
-    margin: 0 auto;
-}
-
-/* Навигация */
+/* ===== НАВИГАЦИЯ ===== */
 .navbar {
     background: var(--glass);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 2px solid var(--glass-border);
     position: sticky;
     top: 0;
     z-index: 1000;
     padding: 1rem 0;
+    box-shadow: var(--shadow);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Логотип */
-.container-logo {
+.logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 12px;
     text-decoration: none;
+    font-family: 'Mountains of Christmas', cursive;
 }
 
 .logo-icon {
-    font-size: 2rem;
-    background: linear-gradient(45deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 2.5rem;
+    animation: bounce 2s infinite;
 }
 
 .logo-text {
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 1.8rem;
+    font-weight: 700;
     color: var(--light);
-    display: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-@media (min-width: 768px) {
-    .logo-text {
-        display: block;
-    }
+.year {
+    background: linear-gradient(45deg, var(--newyear-red), var(--newyear-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.2rem;
+    font-weight: 800;
 }
 
-/* Статистика */
-.statistics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Меню */
+.desktop-menu {
+    display: flex;
+    align-items: center;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
     gap: 1.5rem;
-    margin-top: 3rem;
+    align-items: center;
 }
 
-.stat-card {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    padding: 1.5rem;
-    text-align: center;
+.nav-link {
+    color: var(--light);
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
     transition: var(--transition);
+    background: transparent;
+    border: 2px solid transparent;
+}
+
+.nav-link:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: var(--newyear-red);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, var(--newyear-red), var(--primary-dark));
+    border-color: transparent;
+}
+
+/* Выпадающее меню */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    min-width: 200px;
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 10px;
+    box-shadow: var(--shadow);
+    z-index: 1001;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-item {
+    color: var(--light);
+    text-decoration: none;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 107, 107, 0.15);
+}
+
+/* ===== КНОПКИ ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0.8rem 1.8rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    min-height: 44px;
+    font-family: inherit;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: 2px solid transparent;
+}
+
+.btn-primary:hover {
+    border-color: var(--accent);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--light);
+    border: 2px solid var(--glass-border);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #FF6B6B, #E85959);
+    color: white;
+    border: 2px solid transparent;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* ===== КАРТОЧКИ И ТАБЛИЦЫ ===== */
+.card {
+    background: var(--glass);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.table-container {
+    background: var(--glass);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    overflow-x: auto;
     backdrop-filter: blur(10px);
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary);
-    box-shadow: 0 15px 35px rgba(108, 99, 255, 0.2);
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
 }
 
-.stat-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    background: linear-gradient(45deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.table th {
+    text-align: left;
+    padding: 1rem;
+    color: var(--primary);
+    font-weight: 700;
+    border-bottom: 2px solid var(--glass-border);
 }
 
-.stat-value {
-    font-size: 2rem;
-    font-weight: 800;
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background: rgba(255, 107, 107, 0.05);
+}
+
+/* Статусы */
+.status {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-in-stock {
+    background: rgba(81, 207, 102, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(81, 207, 102, 0.3);
+}
+
+.status-low {
+    background: rgba(255, 169, 77, 0.15);
+    color: var(--warning);
+    border: 1px solid rgba(255, 169, 77, 0.3);
+}
+
+.status-out {
+    background: rgba(255, 107, 107, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* ===== ФОРМЫ ===== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
     margin-bottom: 0.5rem;
+    color: var(--light);
+    font-weight: 600;
 }
 
-.stat-label {
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--light);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+}
+
+/* ===== ФУТЕР ===== */
+.footer {
+    margin-top: 4rem;
+    padding: 3rem 0;
+    border-top: 2px solid var(--glass-border);
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
     color: var(--gray);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-/* Анимации для всего */
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
+/* ===== БЛЮР ПРИ СКРОЛЛЕ ===== */
+.scroll-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: -1;
+}
+
+body.scrolled .scroll-blur {
+    opacity: 1;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 1024px) {
+    .desktop-menu {
+        display: none;
     }
-    50% {
-        transform: translateY(-10px);
+
+    .nav-container {
+        position: relative;
+    }
+
+    .theme-toggle-mobile {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--light);
+        font-size: 1.5rem;
+        cursor: pointer;
     }
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .card, .table-container {
+        padding: 1rem;
+    }
+
+    .btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
     }
 }
 
-.fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
+/* Новогодние украшения */
+.christmas-decoration {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.decoration-1 {
+    top: 20%;
+    left: 5%;
+    font-size: 2rem;
+    animation: swing 3s infinite alternate;
+}
+
+.decoration-2 {
+    top: 40%;
+    right: 5%;
+    font-size: 2rem;
+    animation: swing 4s infinite alternate-reverse;
+}
+
+@keyframes swing {
+    0% { transform: rotate(-15deg); }
+    100% { transform: rotate(15deg); }
 }

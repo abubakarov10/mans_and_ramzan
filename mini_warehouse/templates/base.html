@@ -1,84 +1,212 @@
-{% load static %}
-
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="ru" data-theme="newyear">
 <head>
     <meta charset="UTF-8">
-    <title>SuRam Alpha 0.1</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="{% static 'js/snow.js' %}" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 SuRam Mini-Warehouse v3</title>
 
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Стили -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/theme.css">
+
+    <!-- Новогодние шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .newyear-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='images/newyear-bg.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -2;
+            opacity: 0.15;
+        }
+
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh); }
+        }
+    </style>
 </head>
-<body><script src="{% static 'js/snow.js' %}"></script>
+<body>
+    <!-- Новогодний фон -->
+    <div class="newyear-bg"></div>
+    <div class="snowflakes" id="snowflakes"></div>
 
     <!-- Навигация -->
     <nav class="navbar">
-        <a href="#" class="container-logo">
-            <div class="logo-icon">🚀</div>
-            <div class="logo-text">SuRam</div>
-        </a>
-            <!-- Меню -->
+        <div class="container nav-container">
+            <!-- Логотип -->
+            <a href="../templates/base.html" class="logo">
+                <div class="logo-icon">🎄</div>
+                <div class="logo-text">SuRam <span class="year">2025</span></div>
+            </a>
+
+            <!-- Основное меню -->
             <div class="desktop-menu">
                 <ul class="nav-list">
-                    <li><a href="#" class="home"><i class="fas fa-home"></i> Главная</a></li>
-                    <li><a href="#products" class="nav-link"><i class="products-nav">Товары</i></a></li>
-                    <li><a href="#sales" class="nav-link"><i class="sales-nav">Продажи</i></a></li>
-                    <li><a href="#reports" class="nav-link"><i class="reports-nav">Отчеты</i></a></li>
-                    <li><button class="btn_project" id="addBtnProject"><i class="add-product"></i>Добавить</button></li>
+                    <li><a href="../templates/base.html" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                    <li><a href="../templates/products/list.html" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                    <li><a href="../templates/sales/list.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                    <li><a href="../templates/reports/profit.html" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+
+                    <!-- Дополнительные кнопки -->
+                    <li class="dropdown">
+                        <button class="nav-link dropdown-toggle">
+                            <i class="fas fa-plus-circle"></i> Дополнительно
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('about') }}" class="dropdown-item">
+                                <i class="fas fa-info-circle"></i> О нас
+                            </a>
+                            <button class="dropdown-item" id="themeToggle">
+                                <i class="fas fa-palette"></i> Сменить тему
+                            </button>
+                            <a href="{{ url_for('payment_page') }}" class="dropdown-item">
+                                <i class="fas fa-wallet"></i> Баланс
+                            </a>
+                        </div>
+                    </li>
+
+                    <!-- Кнопка "Новая продажа" -->
+                    <li>
+                        <a href="{{ url_for('sales_new') }}" class="btn btn-danger">
+                            <i class="fas fa-bolt"></i> Новая продажа
+                        </a>
+                    </li>
                 </ul>
             </div>
+
+            <!-- Переключатель темы для мобильных -->
+            <button class="theme-toggle-mobile" id="themeToggleMobile">
+                <i class="fas fa-palette"></i>
+            </button>
+        </div>
     </nav>
 
-    <!-- Главное меню -->
-    <section class="main-menu">
-        <div class="main-menu-content"></div>
+    <!-- Основной контент -->
+    <main class="container main-content">
+        <!-- Блюр-эффект при скролле -->
+        <div class="scroll-blur"></div>
+
+        <!-- Flash сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-newyear">
+                            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                            {{ message }}
+                            <button class="alert-close">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Блок для контента страниц -->
+        {% block content %}
+        <!-- Сюда вставляется контент конкретной страницы -->
+        {% endblock %}
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
         <div class="container">
-            <h1 class="fade">Цифровой склад для вашего бизнеса<br></h1>
-            <p class="fade">
-                Превратите хаос учета в понятную систему. Добавляйте товары, фиксируйте продажи, анализируйте прибыль — все в одном интерфейсе, доступном с любого устройства.
-            </p>
-        </div>
-    </section>
-
-    <!-- Статистика -->
-    <div class="container">
-        <div class="statistics">
-            <div class="stat-card fade-in">
-                <div class="stat-icon">📦</div>
-                <div class="stat-value">{{ total_products }}</div>
-
-                <div class="stat-label">Товаров в системе</div>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-tree"></i> SuRam Warehouse</h3>
+                    <p>Новогодняя версия 3.0</p>
+                    <p>С праздником! 🎅</p>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-users"></i> Разработчики</h3>
+                    <p>Команда "Mans & Ramzan"</p>
+                    <p>Хакатон 2025</p>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-gift"></i> Особенности</h3>
+                    <p>🎄 Новогодний дизайн</p>
+                    <p>🎨 Две темы оформления</p>
+                    <p>📱 Полная адаптивность</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 SuRam Mini-Warehouse. Все права защищены. | С Новым Годом! 🎉</p>
             </div>
         </div>
-
-        <div class="stat-card fade-in">
-            <div class="stat-icon">💰</div>
-            <div class="stat-value">???</div>
-            <div class="stat-label">Выручка сегодня</div>
-        </div>
-
-        <div class="stat-card fade-in">
-            <div class="stat-icon">📊</div>
-            <div class="stat-value">???</div>
-            <div class="stat-label">Эффективность</div>
-        </div>
-
-        <div class="stat-card dade-in">
-            <div class="stat-icon">🚚</div>
-            <div class="stat-value">???</div>
-            <div class="stat-label">Продаж за день</div>
-        </div>
-    </div>
-
-        <!-- Футер -->
-        <footer class="footer-info">
-        <div class="footer-features">
-            <p class="feature">📱 Адаптивный дизайн</p>
-            <p class="feature">🔒 Безопасность данных</p>
-            <p class="feature">⚡ Быстрая загрузка</p>
-            <p class="rights">© 2025 SuRam. Все права защищены.</p>
-        </div>
     </footer>
+
+    <!-- Скрипты -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+        // Снежинки
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            if (!container) return;
+
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+
+                // Случайные параметры
+                const size = Math.random() * 10 + 5;
+                const left = Math.random() * 100;
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 5;
+
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+                snowflake.style.left = `${left}%`;
+                snowflake.style.animationDuration = `${duration}s`;
+                snowflake.style.animationDelay = `${delay}s`;
+
+                container.appendChild(snowflake);
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            createSnowflakes();
+
+            // Закрытие алертов
+            document.querySelectorAll('.alert-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.parentElement.style.opacity = '0';
+                    setTimeout(() => {
+                        this.parentElement.remove();
+                    }, 300);
+                });
+            });
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>
