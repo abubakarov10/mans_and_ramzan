@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎄 SuRam Mini-Warehouse v3</title>
+    <title>🎄 SuRam Mini-Warehouse v3 - Главная</title>
 
     <!-- Icons -->
     <link rel="stylesheet"
@@ -35,9 +35,9 @@
         <div class="desktop-menu">
             <ul class="nav-list">
                 <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
-                <li><a href="./products/" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
-                <li><a href="./sales/" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
-                <li><a href="./reports/" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li><a href="./products/list.html" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="./sales/list.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="./reports/profit.html" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
                 <li>
                     <a href="/sales/new/" class="btn btn-danger">
                         <i class="fas fa-bolt"></i> Новая продажа
@@ -128,8 +128,8 @@
                                     <td><span class="status status-in-stock">В наличии</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon" title="Быстрая продажа"><i class="fas fa-bolt"></i></button>
-                                            <button class="btn-icon" title="Редактировать"><i class="fas fa-edit"></i></button>
+                                            <button class="btn-icon btn-sell" data-product="iPhone 15 Pro"><i class="fas fa-bolt"></i></button>
+                                            <button class="btn-icon btn-edit" data-product="iPhone 15 Pro"><i class="fas fa-edit"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -149,8 +149,8 @@
                                     <td><span class="status status-low">Мало</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon" title="Быстрая продажа"><i class="fas fa-bolt"></i></button>
-                                            <button class="btn-icon" title="Редактировать"><i class="fas fa-edit"></i></button>
+                                            <button class="btn-icon btn-sell" data-product="ASUS ROG Strix"><i class="fas fa-bolt"></i></button>
+                                            <button class="btn-icon btn-edit" data-product="ASUS ROG Strix"><i class="fas fa-edit"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -170,8 +170,8 @@
                                     <td><span class="status status-out">Нет в наличии</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon" title="Заказать"><i class="fas fa-shopping-cart"></i></button>
-                                            <button class="btn-icon" title="Редактировать"><i class="fas fa-edit"></i></button>
+                                            <button class="btn-icon btn-order" data-product="Sony WH-1000XM5"><i class="fas fa-shopping-cart"></i></button>
+                                            <button class="btn-icon btn-edit" data-product="Sony WH-1000XM5"><i class="fas fa-edit"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -268,28 +268,28 @@
             <div class="card">
                 <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
                 <div class="quick-actions">
-                    <a href="./sales/new/" class="quick-action-btn quick-sale">
+                    <a href="./sales/new/" class="quick-action-btn quick-sale" data-action="quick-sale">
                         <div class="action-icon">🛒</div>
                         <div>
                             <div class="action-title">Быстрая продажа</div>
                             <div class="action-desc">Продать товар за 30 секунд</div>
                         </div>
                     </a>
-                    <a href="./sales/pro/" class="quick-action-btn pro-sale">
+                    <a href="./sales/pro/" class="quick-action-btn pro-sale" data-action="pro-sale">
                         <div class="action-icon">📋</div>
                         <div>
                             <div class="action-title">Профессиональная продажа</div>
                             <div class="action-desc">Подробная работа с клиентом</div>
                         </div>
                     </a>
-                    <a href="./reports/" class="quick-action-btn create-report">
+                    <a href="./reports/" class="quick-action-btn create-report" data-action="create-report">
                         <div class="action-icon">📊</div>
                         <div>
                             <div class="action-title">Создать отчёт</div>
                             <div class="action-desc">Генерация отчёта за период</div>
                         </div>
                     </a>
-                    <a href="./export/" class="quick-action-btn export-data">
+                    <a href="./export/" class="quick-action-btn export-data" data-action="export-data">
                         <div class="action-icon">📤</div>
                         <div>
                             <div class="action-title">Экспорт данных</div>

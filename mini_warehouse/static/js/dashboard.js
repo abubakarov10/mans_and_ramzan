@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Инициализация интерактивных элементов таблицы
     initTableInteractions();
+
+    // Инициализация кнопок в таблице
+    initTableButtons();
 });
 
 // Создание снежинок
@@ -69,13 +72,6 @@ function initActiveMenu() {
             link.classList.add('active');
         }
     });
-
-    // Специальная проверка для кнопки "Новая продажа"
-    const newSaleBtn = document.querySelector('.btn-danger.nav-link');
-    if (newSaleBtn && currentPath.includes('/sales/new')) {
-        // Не делаем кнопку активной, только ссылки навигации
-        newSaleBtn.classList.remove('active');
-    }
 }
 
 // Уведомления
@@ -225,34 +221,82 @@ function initQuickActions() {
 
     quickActionBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
-            if (this.getAttribute('href') === '#' || this.getAttribute('href') === '') {
-                e.preventDefault();
+            // Проверяем, если ссылка ведет на реальную страницу
+            const href = this.getAttribute('href');
+            if (href && href !== '#' && href !== '') {
+                // Реальная навигация
+                return;
+            }
 
-                // Анимация нажатия
-                this.style.transform = 'translateX(2px) scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = 'translateX(2px) scale(1)';
-                }, 150);
+            e.preventDefault();
 
-                // Показ сообщения в зависимости от типа действия
-                const title = this.querySelector('.action-title').textContent;
-                let message = '';
+            // Анимация нажатия
+            this.style.transform = 'translateX(2px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateX(2px) scale(1)';
+            }, 150);
 
-                if (title.includes('Быстрая продажа')) {
+            // Показ сообщения в зависимости от типа действия
+            const action = this.getAttribute('data-action');
+            let message = '';
+
+            switch(action) {
+                case 'quick-sale':
                     message = 'Открывается форма быстрой продажи...';
-                } else if (title.includes('Профессиональная продажа')) {
+                    // Можете добавить модальное окно или перенаправление
+                    setTimeout(() => {
+                        window.location.href = '/sales/new/';
+                    }, 500);
+                    break;
+                case 'pro-sale':
                     message = 'Запускается режим профессиональной продажи...';
-                } else if (title.includes('Создать отчёт')) {
+                    // Здесь можно открыть модальное окно с формой
+                    break;
+                case 'create-report':
                     message = 'Генерация отчёта...';
-                } else if (title.includes('Экспорт данных')) {
+                    setTimeout(() => {
+                        window.location.href = '/reports/';
+                    }, 500);
+                    break;
+                case 'export-data':
                     message = 'Подготовка данных для экспорта...';
-                }
+                    // Здесь можно добавить логику экспорта
+                    simulateExport();
+                    break;
+            }
 
-                // Временное сообщение
+            if (message) {
                 showToast(message);
             }
         });
     });
+}
+
+// Симуляция экспорта данных
+function simulateExport() {
+    showToast('Подготовка данных для экспорта...', 2000);
+
+    setTimeout(() => {
+        showToast('Экспорт завершен! Файл готов к скачиванию.', 3000);
+
+        // Создаем временную ссылку для скачивания
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(generateSampleCSV());
+        link.download = 'suram_export_' + new Date().toISOString().split('T')[0] + '.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }, 2000);
+}
+
+function generateSampleCSV() {
+    return `Товар,Категория,Остаток,Цена,Статус,Продажи
+"Смартфон iPhone 15 Pro",Электроника,42,89990,"В наличии",125
+"Ноутбук ASUS ROG Strix",Электроника,8,149990,"Мало",89
+"Наушники Sony WH-1000XM5",Аудио,0,34990,"Нет в наличии",67
+"Новогодняя ёлка 1.8м",Новогодние товары,15,12990,"В наличии",42
+"Шоколадный набор",Новогодние товары,120,2990,"В наличии",189`;
 }
 
 // Обновление времени в уведомлениях
@@ -332,35 +376,6 @@ function initMetrics() {
 
 // Интерактивные элементы таблицы
 function initTableInteractions() {
-    const actionButtons = document.querySelectorAll('.btn-icon');
-
-    actionButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const title = this.getAttribute('title');
-            const productName = this.closest('tr').querySelector('.product-name').textContent;
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            let message = '';
-            if (title === 'Быстрая продажа') {
-                message = `Быстрая продажа товара: ${productName}`;
-            } else if (title === 'Редактировать') {
-                message = `Редактирование товара: ${productName}`;
-            } else if (title === 'Заказать') {
-                message = `Заказ товара: ${productName}`;
-            }
-
-            if (message) {
-                showToast(message);
-            }
-        });
-    });
-
     // Клик по строке таблицы
     const tableRows = document.querySelectorAll('.table tbody tr');
     tableRows.forEach(row => {
@@ -370,6 +385,67 @@ function initTableInteractions() {
             const price = this.querySelector('.price').textContent;
 
             showToast(`${productName} | ${status} | ${price}`, 2500);
+        });
+    });
+}
+
+// Кнопки в таблице
+function initTableButtons() {
+    // Кнопки продажи
+    const sellButtons = document.querySelectorAll('.btn-sell');
+    sellButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const product = this.getAttribute('data-product');
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            showToast(`Быстрая продажа: ${product}`, 2000);
+            setTimeout(() => {
+                window.location.href = '/sales/new/?product=' + encodeURIComponent(product);
+            }, 500);
+        });
+    });
+
+    // Кнопки редактирования
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const product = this.getAttribute('data-product');
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            showToast(`Редактирование: ${product}`, 2000);
+            setTimeout(() => {
+                window.location.href = '/products/edit/?product=' + encodeURIComponent(product);
+            }, 500);
+        });
+    });
+
+    // Кнопки заказа
+    const orderButtons = document.querySelectorAll('.btn-order');
+    orderButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const product = this.getAttribute('data-product');
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            showToast(`Заказ товара: ${product}`, 2000);
+            // Здесь можно открыть форму заказа
         });
     });
 }

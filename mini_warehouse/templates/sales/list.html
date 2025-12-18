@@ -1,37 +1,133 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ru" data-theme="newyear">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 SuRam - Продажи</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-theme="newyear">
+<div class="newyear-bg"></div>
+<div class="snowflakes" id="snowflakes"></div>
 
-{% block content %}
-<div class="card">
-    <h2>🛒 Продажи</h2>
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">🎄</div>
+            <div class="logo-text">SuRam <span class="year">2025</span></div>
+        </a>
+        <div class="desktop-menu">
+            <ul class="nav-list">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="../products/" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="./" class="nav-link active"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="../reports/" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li><a href="new/" class="btn btn-danger"><i class="fas fa-bolt"></i> Новая продажа</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <form style="display:flex; gap:15px; margin-top:15px;">
-        <input class="form-control" type="date">
-        <input class="form-control" type="date">
-        <button class="btn btn-secondary">Фильтр</button>
-    </form>
-</div>
+<main class="container">
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-cart"></i> История продаж</h1>
+        <div class="header-actions">
+            <a href="new/" class="btn btn-danger"><i class="fas fa-bolt"></i> Новая продажа</a>
+        </div>
+    </div>
 
-<div class="table-container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Товар</th>
-                <th>Количество</th>
-                <th>Дата</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>🎁 Шоколад</td>
-                <td>3</td>
-                <td>15.12.2025</td>
-            </tr>
-            <tr>
-                <td>🎄 Ёлка</td>
-                <td>1</td>
-                <td>14.12.2025</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-icon">💰</div>
+            <div class="metric-value">₽ 89,430</div>
+            <div class="metric-label">ВЫРУЧКА СЕГОДНЯ</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon">🛒</div>
+            <div class="metric-value">247</div>
+            <div class="metric-label">ПРОДАЖ СЕГОДНЯ</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon">📦</div>
+            <div class="metric-value">1,247</div>
+            <div class="metric-label">ТОВАРОВ ПРОДАНО</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-icon">📈</div>
+            <div class="metric-value">94.2%</div>
+            <div class="metric-label">ЭФФЕКТИВНОСТЬ</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Последние продажи</h3>
+            <div class="filters">
+                <select class="form-control">
+                    <option>Сегодня</option>
+                    <option>Неделя</option>
+                    <option>Месяц</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                        <th>Сумма</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#4892</td>
+                        <td>iPhone 15 Pro (x2)</td>
+                        <td>2 шт.</td>
+                        <td>₽ 179,980</td>
+                        <td>25.12.2024 14:30</td>
+                        <td><span class="status status-success">Завершено</span></td>
+                        <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>#4891</td>
+                        <td>ASUS ROG Strix</td>
+                        <td>1 шт.</td>
+                        <td>₽ 149,990</td>
+                        <td>25.12.2024 13:15</td>
+                        <td><span class="status status-success">Завершено</span></td>
+                        <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>#4890</td>
+                        <td>Новогодний набор (x5)</td>
+                        <td>5 шт.</td>
+                        <td>₽ 14,950</td>
+                        <td>25.12.2024 11:45</td>
+                        <td><span class="status status-success">Завершено</span></td>
+                        <td><button class="btn-icon"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            © 2025 SuRam Mini-Warehouse · Команда Mans & Ramzan · 🎄
+        </div>
+    </div>
+</footer>
+
+<script src="../../static/js/main.js"></script>
+</body>
+</html>

@@ -1,24 +1,153 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ru" data-theme="newyear">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 SuRam - Отчёты</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-theme="newyear">
+<div class="newyear-bg"></div>
+<div class="snowflakes" id="snowflakes"></div>
 
-{% block content %}
-<div class="card">
-    <h2>📊 Отчёт по прибыли</h2>
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">🎄</div>
+            <div class="logo-text">SuRam <span class="year">2025</span></div>
+        </a>
+        <div class="desktop-menu">
+            <ul class="nav-list">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="../products/" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="../sales/" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="./" class="nav-link active"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li><a href="../sales/new/" class="btn btn-danger"><i class="fas fa-bolt"></i> Новая продажа</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <form style="display:flex; gap:15px; margin-top:15px;">
-        <input class="form-control" type="date">
-        <input class="form-control" type="date">
-        <button class="btn btn-secondary">Показать</button>
-    </form>
-</div>
+<main class="container">
+    <div class="page-header">
+        <h1><i class="fas fa-chart-pie"></i> Финансовые отчёты</h1>
+        <div class="header-actions">
+            <button class="btn btn-primary"><i class="fas fa-download"></i> Экспорт отчёта</button>
+        </div>
+    </div>
 
-<div class="card">
-    <h3>Результаты</h3>
-    <ul style="line-height: 2; margin-top: 10px;">
-        <li>💰 Выручка: <strong>12 500 ₽</strong></li>
-        <li>📦 Себестоимость: <strong>8 200 ₽</strong></li>
-        <li>📈 Прибыль: <strong style="color:#51CF66;">4 300 ₽</strong></li>
-        <li>🧾 Продаж: <strong>5</strong></li>
-        <li>📊 Товаров продано: <strong>12</strong></li>
-    </ul>
-</div>
-{% endblock %}
+    <div class="card">
+        <div class="card-header">
+            <h3>Выберите период</h3>
+            <div class="period-selector">
+                <input type="date" class="form-control" value="2024-12-01">
+                <span>—</span>
+                <input type="date" class="form-control" value="2024-12-25">
+                <button class="btn btn-primary">Сгенерировать отчёт</button>
+            </div>
+        </div>
+
+        <div class="report-stats">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-content">
+                    <div class="stat-label">Общая выручка</div>
+                    <div class="stat-value">₽ 2,847,600</div>
+                    <div class="stat-change positive">+15% за период</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-content">
+                    <div class="stat-label">Продано товаров</div>
+                    <div class="stat-value">1,247 шт.</div>
+                    <div class="stat-change positive">+12% за период</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-content">
+                    <div class="stat-label">Средний чек</div>
+                    <div class="stat-value">₽ 3,540</div>
+                    <div class="stat-change positive">+3% за период</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <div class="stat-label">Маржинальность</div>
+                    <div class="stat-value">42.5%</div>
+                    <div class="stat-change positive">+2% за период</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-chart">
+            <h4>Динамика продаж по дням</h4>
+            <div class="chart-placeholder">
+                <!-- Здесь будет график -->
+                <div class="chart-bars">
+                    <div class="chart-bar" style="height: 30%"></div>
+                    <div class="chart-bar" style="height: 50%"></div>
+                    <div class="chart-bar" style="height: 70%"></div>
+                    <div class="chart-bar" style="height: 90%"></div>
+                    <div class="chart-bar" style="height: 60%"></div>
+                    <div class="chart-bar" style="height: 80%"></div>
+                    <div class="chart-bar" style="height: 40%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-table">
+            <h4>Топ продаваемых товаров</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Категория</th>
+                        <th>Количество продаж</th>
+                        <th>Выручка</th>
+                        <th>Доля</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>iPhone 15 Pro</td>
+                        <td>Электроника</td>
+                        <td>125 шт.</td>
+                        <td>₽ 11,248,750</td>
+                        <td>42%</td>
+                    </tr>
+                    <tr>
+                        <td>ASUS ROG Strix</td>
+                        <td>Электроника</td>
+                        <td>89 шт.</td>
+                        <td>₽ 13,349,110</td>
+                        <td>30%</td>
+                    </tr>
+                    <tr>
+                        <td>Новогодние наборы</td>
+                        <td>Новогодние товары</td>
+                        <td>189 шт.</td>
+                        <td>₽ 565,110</td>
+                        <td>15%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            © 2025 SuRam Mini-Warehouse · Команда Mans & Ramzan · 🎄
+        </div>
+    </div>
+</footer>
+
+<script src="../../static/js/main.js"></script>
+</body>
+</html>

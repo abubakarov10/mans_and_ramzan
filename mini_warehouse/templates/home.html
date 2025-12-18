@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="newyear">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 SuRam Mini-Warehouse v3</title>
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/theme.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body data-theme="newyear">
+<!-- Background -->
+<div class="newyear-bg"></div>
+<div class="snowflakes" id="snowflakes"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">🎄</div>
+            <div class="logo-text">SuRam <span class="year">2025</span></div>
+        </a>
+
+        <div class="desktop-menu">
+            <ul class="nav-list">
+                <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="../products/" class="nav-link {% if 'products' in request.path %}active{% endif %}"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="../sales/" class="nav-link {% if 'sales' in request.path %}active{% endif %}"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="../reports/" class="nav-link {% if 'reports' in request.path %}active{% endif %}"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li>
+                    <a href="../sales/new/" class="btn btn-danger">
+                        <i class="fas fa-bolt"></i> Новая продажа
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mobile-menu">
+            <button class="theme-toggle-mobile" id="themeToggleMobile">
+                <i class="fas fa-palette"></i>
+            </button>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            © 2025 SuRam Mini-Warehouse · Команда Mans & Ramzan · 🎄
+        </div>
+    </div>
+</footer>
+
+<!-- JS -->
+<script src="../static/js/main.js"></script>
+<script src="../static/js/dashboard.js"></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
