@@ -5,208 +5,420 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎄 SuRam Mini-Warehouse v3</title>
 
-    <!-- Иконки -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Стили -->
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="../static/css/theme.css">
-
-    <!-- Новогодние шрифты -->
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        .newyear-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("{{ url_for('static', filename='images/newyear-bg.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            z-index: -2;
-            opacity: 0.15;
-        }
-
-        .snowflakes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .snowflake {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(100vh); }
-        }
-    </style>
 </head>
-<body>
-    <!-- Новогодний фон -->
-    <div class="newyear-bg"></div>
-    <div class="snowflakes" id="snowflakes"></div>
 
-    <!-- Навигация -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <!-- Логотип -->
-            <a href="../templates/base.html" class="logo">
-                <div class="logo-icon">🎄</div>
-                <div class="logo-text">SuRam <span class="year">2025</span></div>
-            </a>
+<body data-theme="newyear">
 
-            <!-- Основное меню -->
-            <div class="desktop-menu">
-                <ul class="nav-list">
-                    <li><a href="../templates/base.html" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
-                    <li><a href="../templates/products/list.html" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
-                    <li><a href="../templates/sales/list.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
-                    <li><a href="../templates/reports/profit.html" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+<!-- Background -->
+<div class="newyear-bg"></div>
+<div class="snowflakes" id="snowflakes"></div>
 
-                    <!-- Дополнительные кнопки -->
-                    <li class="dropdown">
-                        <button class="nav-link dropdown-toggle">
-                            <i class="fas fa-plus-circle"></i> Дополнительно
-                        </button>
-                        <div class="dropdown-menu">
-                            <a href="{{ url_for('about') }}" class="dropdown-item">
-                                <i class="fas fa-info-circle"></i> О нас
-                            </a>
-                            <button class="dropdown-item" id="themeToggle">
-                                <i class="fas fa-palette"></i> Сменить тему
-                            </button>
-                            <a href="{{ url_for('payment_page') }}" class="dropdown-item">
-                                <i class="fas fa-wallet"></i> Баланс
-                            </a>
-                        </div>
-                    </li>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">🎄</div>
+            <div class="logo-text">SuRam <span class="year">2025</span></div>
+        </a>
 
-                    <!-- Кнопка "Новая продажа" -->
-                    <li>
-                        <a href="{{ url_for('sales_new') }}" class="btn btn-danger">
-                            <i class="fas fa-bolt"></i> Новая продажа
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div class="desktop-menu">
+            <ul class="nav-list">
+                <li><a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="./products/" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="./sales/" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="./reports/" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li>
+                    <a href="/sales/new/" class="btn btn-danger">
+                        <i class="fas fa-bolt"></i> Новая продажа
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-            <!-- Переключатель темы для мобильных -->
+        <div class="mobile-menu">
             <button class="theme-toggle-mobile" id="themeToggleMobile">
                 <i class="fas fa-palette"></i>
             </button>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Основной контент -->
-    <main class="container main-content">
-        <!-- Блюр-эффект при скролле -->
-        <div class="scroll-blur"></div>
+<!-- MAIN -->
+<main class="container">
+    <div class="main-grid">
+        <!-- LEFT CONTENT -->
+        <section class="dashboard-left">
+            <!-- Ключевые метрики -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">🎁</div>
+                    <div class="metric-value">1,247</div>
+                    <div class="metric-label">ТОВАРОВ В СИСТЕМЕ</div>
+                </div>
 
-        <!-- Flash сообщения -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-newyear">
-                            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
-                            {{ message }}
-                            <button class="alert-close">&times;</button>
+                <div class="metric-card">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-value">₽ 89,430</div>
+                    <div class="metric-label">ВЫРУЧКА СЕГОДНЯ</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-value">94.2%</div>
+                    <div class="metric-label">ЭФФЕКТИВНОСТЬ</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">🛒</div>
+                    <div class="metric-value">247</div>
+                    <div class="metric-label">ПРОДАЖ ЗА ДЕНЬ</div>
+                </div>
+            </div>
+
+            <!-- Таблица популярных товаров -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-fire"></i> Популярные товары</h3>
+                    <div class="card-actions">
+                        <a href="./products/" class="btn btn-small btn-secondary">Все товары →</a>
+                        <a href="./products/new/" class="btn btn-small btn-primary">+ Добавить</a>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-cube"></i> Название</th>
+                                    <th><i class="fas fa-tag"></i> Категория</th>
+                                    <th><i class="fas fa-box"></i> Остаток</th>
+                                    <th><i class="fas fa-tag"></i> Цена</th>
+                                    <th><i class="fas fa-circle"></i> Статус</th>
+                                    <th><i class="fas fa-cog"></i> Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="product-info">
+                                            <div class="product-icon">📱</div>
+                                            <div>
+                                                <div class="product-name">Смартфон iPhone 15 Pro</div>
+                                                <div class="product-sku">SKU: APP-IP15P-256</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="category-badge">Электроника</span></td>
+                                    <td><span class="stock-count">42 шт.</span></td>
+                                    <td><span class="price">₽ 89,990</span></td>
+                                    <td><span class="status status-in-stock">В наличии</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" title="Быстрая продажа"><i class="fas fa-bolt"></i></button>
+                                            <button class="btn-icon" title="Редактировать"><i class="fas fa-edit"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="product-info">
+                                            <div class="product-icon">💻</div>
+                                            <div>
+                                                <div class="product-name">Ноутбук ASUS ROG Strix</div>
+                                                <div class="product-sku">SKU: ASUS-ROG-G18</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="category-badge">Электроника</span></td>
+                                    <td><span class="stock-count">8 шт.</span></td>
+                                    <td><span class="price">₽ 149,990</span></td>
+                                    <td><span class="status status-low">Мало</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" title="Быстрая продажа"><i class="fas fa-bolt"></i></button>
+                                            <button class="btn-icon" title="Редактировать"><i class="fas fa-edit"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="product-info">
+                                            <div class="product-icon">🎧</div>
+                                            <div>
+                                                <div class="product-name">Наушники Sony WH-1000XM5</div>
+                                                <div class="product-sku">SKU: SON-WH1000XM5</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="category-badge">Аудио</span></td>
+                                    <td><span class="stock-count">0 шт.</span></td>
+                                    <td><span class="price">₽ 34,990</span></td>
+                                    <td><span class="status status-out">Нет в наличии</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon" title="Заказать"><i class="fas fa-shopping-cart"></i></button>
+                                            <button class="btn-icon" title="Редактировать"><i class="fas fa-edit"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Динамика продаж за неделю -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Динамика продаж за неделю</h3>
+                    <div class="week-info">
+                        <span class="current-week">Текущая неделя</span>
+                        <span class="revenue-week">+15% к прошлой неделе</span>
+                    </div>
+                </div>
+                <div class="sales-chart">
+                    <div class="chart-bars">
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="42100" style="height: 40%">
+                                <div class="bar-value">₽42,100</div>
+                            </div>
+                            <div class="chart-label">Пн</div>
                         </div>
-                    {% endfor %}
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="68500" style="height: 65%">
+                                <div class="bar-value">₽68,500</div>
+                            </div>
+                            <div class="chart-label">Вт</div>
+                        </div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="31200" style="height: 30%">
+                                <div class="bar-value">₽31,200</div>
+                            </div>
+                            <div class="chart-label">Ср</div>
+                        </div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="84300" style="height: 80%">
+                                <div class="bar-value">₽84,300</div>
+                            </div>
+                            <div class="chart-label">Чт</div>
+                        </div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="57800" style="height: 55%">
+                                <div class="bar-value">₽57,800</div>
+                            </div>
+                            <div class="chart-label">Пт</div>
+                        </div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="94600" style="height: 90%">
+                                <div class="bar-value">₽94,600</div>
+                            </div>
+                            <div class="chart-label">Сб</div>
+                        </div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" data-value="63100" style="height: 60%">
+                                <div class="bar-value">₽63,100</div>
+                            </div>
+                            <div class="chart-label">Вс</div>
+                        </div>
+                    </div>
                 </div>
-            {% endif %}
-        {% endwith %}
-
-        <!-- Блок для контента страниц -->
-        {% block content %}
-        <!-- Сюда вставляется контент конкретной страницы -->
-        {% endblock %}
-    </main>
-
-    <!-- Футер -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3><i class="fas fa-tree"></i> SuRam Warehouse</h3>
-                    <p>Новогодняя версия 3.0</p>
-                    <p>С праздником! 🎅</p>
-                </div>
-                <div class="footer-section">
-                    <h3><i class="fas fa-users"></i> Разработчики</h3>
-                    <p>Команда "Mans & Ramzan"</p>
-                    <p>Хакатон 2025</p>
-                </div>
-                <div class="footer-section">
-                    <h3><i class="fas fa-gift"></i> Особенности</h3>
-                    <p>🎄 Новогодний дизайн</p>
-                    <p>🎨 Две темы оформления</p>
-                    <p>📱 Полная адаптивность</p>
+                <div class="chart-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">💰</div>
+                        <div>
+                            <div class="stat-label">Общая выручка</div>
+                            <div class="stat-value">₽ 441,600</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">📦</div>
+                        <div>
+                            <div class="stat-label">Продано товаров</div>
+                            <div class="stat-value">1,247 шт.</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">📈</div>
+                        <div>
+                            <div class="stat-label">Средний чек</div>
+                            <div class="stat-value">₽ 3,540</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>© 2025 SuRam Mini-Warehouse. Все права защищены. | С Новым Годом! 🎉</p>
+        </section>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="dashboard-sidebar">
+            <!-- Быстрые действия -->
+            <div class="card">
+                <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
+                <div class="quick-actions">
+                    <a href="./sales/new/" class="quick-action-btn quick-sale">
+                        <div class="action-icon">🛒</div>
+                        <div>
+                            <div class="action-title">Быстрая продажа</div>
+                            <div class="action-desc">Продать товар за 30 секунд</div>
+                        </div>
+                    </a>
+                    <a href="./sales/pro/" class="quick-action-btn pro-sale">
+                        <div class="action-icon">📋</div>
+                        <div>
+                            <div class="action-title">Профессиональная продажа</div>
+                            <div class="action-desc">Подробная работа с клиентом</div>
+                        </div>
+                    </a>
+                    <a href="./reports/" class="quick-action-btn create-report">
+                        <div class="action-icon">📊</div>
+                        <div>
+                            <div class="action-title">Создать отчёт</div>
+                            <div class="action-desc">Генерация отчёта за период</div>
+                        </div>
+                    </a>
+                    <a href="./export/" class="quick-action-btn export-data">
+                        <div class="action-icon">📤</div>
+                        <div>
+                            <div class="action-title">Экспорт данных</div>
+                            <div class="action-desc">Выгрузить в Excel/CSV</div>
+                        </div>
+                    </a>
+                </div>
             </div>
+
+            <!-- Уведомления -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bell"></i> Уведомления</h3>
+                    <span class="badge notification-count">3</span>
+                </div>
+                <div class="notifications">
+                    <div class="notification new" data-id="1">
+                        <div class="notification-icon">✅</div>
+                        <div class="notification-content">
+                            <div class="notification-title">Заказ #4892 выполнен</div>
+                            <div class="notification-time" data-time="2024-12-25T14:30:00">6 минут назад</div>
+                        </div>
+                        <button class="notification-close"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="notification new" data-id="2">
+                        <div class="notification-icon">⚠️</div>
+                        <div class="notification-content">
+                            <div class="notification-title">Заканчивается товар</div>
+                            <div class="notification-desc">Ноутбук ASUS ROG Strix</div>
+                            <div class="notification-stock">Осталось 3 шт.</div>
+                        </div>
+                        <button class="notification-close"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="notification" data-id="3">
+                        <div class="notification-icon">📦</div>
+                        <div class="notification-content">
+                            <div class="notification-title">Поставка прибыла</div>
+                            <div class="notification-desc">15 новых товаров на склад</div>
+                            <div class="notification-time" data-time="2024-12-25T12:00:00">2 часа назад</div>
+                        </div>
+                        <button class="notification-close"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="notification-controls">
+                    <button class="btn btn-small btn-secondary mark-all-read">Отметить все как прочитанные</button>
+                </div>
+            </div>
+
+            <!-- Статистика склада -->
+            <div class="card">
+                <h3><i class="fas fa-warehouse"></i> Статистика склада</h3>
+                <div class="warehouse-stats">
+                    <div class="warehouse-stat">
+                        <div class="warehouse-icon">📊</div>
+                        <div>
+                            <div class="warehouse-label">Всего товаров</div>
+                            <div class="warehouse-value">1,247</div>
+                        </div>
+                    </div>
+                    <div class="warehouse-stat warning">
+                        <div class="warehouse-icon">⚠️</div>
+                        <div>
+                            <div class="warehouse-label">Заканчиваются</div>
+                            <div class="warehouse-value">23</div>
+                        </div>
+                    </div>
+                    <div class="warehouse-stat danger">
+                        <div class="warehouse-icon">❌</div>
+                        <div>
+                            <div class="warehouse-label">Нет в наличии</div>
+                            <div class="warehouse-value">8</div>
+                        </div>
+                    </div>
+                    <div class="warehouse-stat success">
+                        <div class="warehouse-icon">✅</div>
+                        <div>
+                            <div class="warehouse-label">В наличии</div>
+                            <div class="warehouse-value">1,216</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Популярные категории -->
+            <div class="card">
+                <h3><i class="fas fa-star"></i> Популярные категории</h3>
+                <div class="categories-list">
+                    <div class="category-item">
+                        <div class="category-icon">📱</div>
+                        <div class="category-info">
+                            <div class="category-name">Электроника</div>
+                            <div class="category-stats">42 продажи · ₽ 3,2М</div>
+                        </div>
+                        <div class="category-rank">1</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🎄</div>
+                        <div class="category-info">
+                            <div class="category-name">Новогодние товары</div>
+                            <div class="category-stats">18 продаж · ₽ 890К</div>
+                        </div>
+                        <div class="category-rank">2</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">🎧</div>
+                        <div class="category-info">
+                            <div class="category-name">Аудио</div>
+                            <div class="category-stats">12 продаж · ₽ 420К</div>
+                        </div>
+                        <div class="category-rank">3</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            © 2025 SuRam Mini-Warehouse · Команда Mans & Ramzan · 🎄
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- Скрипты -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- JS -->
+<script src="../static/js/main.js"></script>
+<script src="../static/js/dashboard.js"></script>
 
-    <script>
-        // Снежинки
-        function createSnowflakes() {
-            const container = document.getElementById('snowflakes');
-            if (!container) return;
-
-            for (let i = 0; i < 50; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-
-                // Случайные параметры
-                const size = Math.random() * 10 + 5;
-                const left = Math.random() * 100;
-                const duration = Math.random() * 10 + 10;
-                const delay = Math.random() * 5;
-
-                snowflake.style.width = `${size}px`;
-                snowflake.style.height = `${size}px`;
-                snowflake.style.left = `${left}%`;
-                snowflake.style.animationDuration = `${duration}s`;
-                snowflake.style.animationDelay = `${delay}s`;
-
-                container.appendChild(snowflake);
-            }
-        }
-
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', function() {
-            createSnowflakes();
-
-            // Закрытие алертов
-            document.querySelectorAll('.alert-close').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.parentElement.style.opacity = '0';
-                    setTimeout(() => {
-                        this.parentElement.remove();
-                    }, 300);
-                });
-            });
-        });
-    </script>
-
-    {% block scripts %}{% endblock %}
 </body>
 </html>

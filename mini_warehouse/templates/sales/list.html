@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>🛒 Продажи</h2>
+
+    <form style="display:flex; gap:15px; margin-top:15px;">
+        <input class="form-control" type="date">
+        <input class="form-control" type="date">
+        <button class="btn btn-secondary">Фильтр</button>
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>🎁 Шоколад</td>
+                <td>3</td>
+                <td>15.12.2025</td>
+            </tr>
+            <tr>
+                <td>🎄 Ёлка</td>
+                <td>1</td>
+                <td>14.12.2025</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

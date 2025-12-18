@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Отчёт по прибыли</h2>
+
+    <form style="display:flex; gap:15px; margin-top:15px;">
+        <input class="form-control" type="date">
+        <input class="form-control" type="date">
+        <button class="btn btn-secondary">Показать</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Результаты</h3>
+    <ul style="line-height: 2; margin-top: 10px;">
+        <li>💰 Выручка: <strong>12 500 ₽</strong></li>
+        <li>📦 Себестоимость: <strong>8 200 ₽</strong></li>
+        <li>📈 Прибыль: <strong style="color:#51CF66;">4 300 ₽</strong></li>
+        <li>🧾 Продаж: <strong>5</strong></li>
+        <li>📊 Товаров продано: <strong>12</strong></li>
+    </ul>
+</div>
+{% endblock %}

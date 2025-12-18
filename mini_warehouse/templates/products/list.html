@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>📦 Товары</h2>
+        <a href="#" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Остаток</th>
+                <th>Закупка</th>
+                <th>Продажа</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Заглушки -->
+            <tr>
+                <td>🎁 Шоколад</td>
+                <td><span class="status status-in-stock">25</span></td>
+                <td>50 ₽</td>
+                <td>90 ₽</td>
+                <td>
+                    <a href="#" class="btn btn-secondary">✏️</a>
+                </td>
+            </tr>
+            <tr>
+                <td>🎄 Ёлка</td>
+                <td><span class="status status-low">3</span></td>
+                <td>2000 ₽</td>
+                <td>3500 ₽</td>
+                <td>
+                    <a href="#" class="btn btn-secondary">✏️</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
