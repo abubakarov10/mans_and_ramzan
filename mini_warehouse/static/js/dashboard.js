@@ -1,4 +1,4 @@
-// dashboard.js - Скрипты для дашборда
+// dashboard.js - Скрипты для дашборда с реальными взаимодействиями
 
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация снежинок
@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Инициализация кнопок в таблице
     initTableButtons();
+
+    // Инициализация пагинации
+    initPagination();
+
+    // Инициализация фильтров
+    initFilters();
+
+    // Инициализация кнопок экспорта
+    initExportButtons();
 });
 
 // Создание снежинок
@@ -450,6 +459,351 @@ function initTableButtons() {
     });
 }
 
+// Инициализация пагинации
+function initPagination() {
+    const pageBtns = document.querySelectorAll('.page-btn');
+    const prevBtn = document.querySelector('.page-btn:first-child');
+    const nextBtn = document.querySelector('.page-btn:last-child');
+    const pageInfo = document.querySelector('.page-info');
+
+    let currentPage = 1;
+    const totalPages = 12; // Примерное количество страниц
+
+    // Обновление состояния кнопок
+    function updatePagination() {
+        // Снимаем активность со всех кнопок
+        pageBtns.forEach(btn => {
+            btn.classList.remove('active');
+            const pageNum = parseInt(btn.textContent);
+            if (pageNum === currentPage) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Обновляем информацию о странице
+        if (pageInfo) {
+            pageInfo.textContent = `Страница ${currentPage} из ${totalPages}`;
+        }
+
+        // Блокируем/разблокируем кнопки навигации
+        if (prevBtn) {
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.style.opacity = currentPage === 1 ? '0.5' : '1';
+            prevBtn.style.cursor = currentPage === 1 ? 'not-allowed' : 'pointer';
+        }
+
+        if (nextBtn) {
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.style.opacity = currentPage === totalPages ? '0.5' : '1';
+            nextBtn.style.cursor = currentPage === totalPages ? 'not-allowed' : 'pointer';
+        }
+
+        // Загружаем данные для текущей страницы
+        loadPageData(currentPage);
+    }
+
+    // Обработчик кликов по кнопкам страниц
+    pageBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const btnText = this.textContent.trim();
+
+            if (btnText === '...') return;
+
+            if (btn === prevBtn && currentPage > 1) {
+                currentPage--;
+            } else if (btn === nextBtn && currentPage < totalPages) {
+                currentPage++;
+            } else if (!isNaN(parseInt(btnText))) {
+                currentPage = parseInt(btnText);
+            }
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            updatePagination();
+            showToast(`Загружена страница ${currentPage}`);
+        });
+    });
+
+    // Инициализация пагинации
+    updatePagination();
+}
+
+// Загрузка данных страницы
+function loadPageData(page) {
+    // Здесь будет загрузка данных с сервера
+    // Для демонстрации просто показываем уведомление
+    console.log(`Загрузка данных для страницы ${page}...`);
+
+    // Симуляция загрузки
+    setTimeout(() => {
+        showToast(`Страница ${page} загружена`);
+    }, 300);
+}
+
+// Инициализация фильтров
+function initFilters() {
+    const filterBtns = document.querySelectorAll('.sales-filters .btn');
+    const dateFrom = document.querySelector('input[type="date"][value="2024-12-01"]');
+    const dateTo = document.querySelector('input[type="date"][value="2024-12-25"]');
+    const searchInput = document.querySelector('.search-box input');
+
+    // Кнопка применения фильтров
+    const applyBtn = document.querySelector('.sales-filters .btn-primary');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', function() {
+            const fromDate = dateFrom ? dateFrom.value : '';
+            const toDate = dateTo ? dateTo.value : '';
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            showToast(`Применены фильтры: ${fromDate} - ${toDate}`);
+
+            // Здесь будет запрос к серверу с фильтрами
+            applyFilters(fromDate, toDate);
+        });
+    }
+
+    // Кнопка сброса фильтров
+    const resetBtn = document.querySelector('.sales-filters .btn-secondary');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            if (dateFrom) dateFrom.value = '2024-12-01';
+            if (dateTo) dateTo.value = '2024-12-25';
+            if (searchInput) searchInput.value = '';
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            showToast('Фильтры сброшены');
+
+            // Сброс фильтров на сервере
+            resetFilters();
+        });
+    }
+
+    // Поиск по товарам
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = this.value.trim();
+                if (query.length >= 2 || query.length === 0) {
+                    searchProducts(query);
+                }
+            }, 500);
+        });
+
+        // Кнопка поиска
+        const searchBtn = searchInput.nextElementSibling;
+        if (searchBtn && searchBtn.classList.contains('btn')) {
+            searchBtn.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                searchProducts(query);
+            });
+        }
+    }
+}
+
+// Применение фильтров
+function applyFilters(fromDate, toDate) {
+    // Здесь будет AJAX запрос к серверу
+    console.log(`Применение фильтров: ${fromDate} - ${toDate}`);
+
+    // Симуляция загрузки
+    showToast('Применяем фильтры...', 1500);
+
+    setTimeout(() => {
+        // Обновляем данные на странице
+        updateFilteredData();
+    }, 1500);
+}
+
+// Сброс фильтров
+function resetFilters() {
+    // Здесь будет AJAX запрос к серверу
+    console.log('Сброс фильтров');
+
+    // Симуляция загрузки
+    showToast('Сбрасываем фильтры...', 1500);
+
+    setTimeout(() => {
+        // Обновляем данные на странице
+        updateFilteredData(true);
+    }, 1500);
+}
+
+// Поиск товаров
+function searchProducts(query) {
+    if (!query) {
+        // Если запрос пустой, показываем все товары
+        updateFilteredData(true);
+        return;
+    }
+
+    // Здесь будет AJAX запрос к серверу
+    console.log(`Поиск товаров: ${query}`);
+
+    showToast(`Поиск: ${query}`, 1500);
+
+    setTimeout(() => {
+        // Симуляция поиска
+        const searchResults = [
+            { name: 'Смартфон iPhone 15 Pro', category: 'Электроника', stock: 42, price: '₽ 89,990', status: 'В наличии' },
+            { name: 'Ноутбук ASUS ROG Strix', category: 'Электроника', stock: 8, price: '₽ 149,990', status: 'Мало' }
+        ];
+
+        updateSearchResults(searchResults);
+    }, 1000);
+}
+
+// Обновление данных после фильтрации
+function updateFilteredData(reset = false) {
+    // Здесь будет обновление DOM с новыми данными
+    if (reset) {
+        showToast('Показаны все товары');
+    } else {
+        showToast('Данные обновлены по фильтрам');
+    }
+}
+
+// Обновление результатов поиска
+function updateSearchResults(results) {
+    // Здесь будет обновление таблицы с результатами поиска
+    console.log('Обновление результатов поиска:', results);
+
+    if (results.length === 0) {
+        showToast('Ничего не найдено');
+    } else {
+        showToast(`Найдено ${results.length} товаров`);
+    }
+}
+
+// Инициализация кнопок экспорта
+function initExportButtons() {
+    const exportBtns = document.querySelectorAll('.btn[class*="export"], .btn:has(.fa-download)');
+
+    exportBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Анимация нажатия
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+
+            // Определяем тип экспорта
+            const pageType = getCurrentPageType();
+            exportData(pageType);
+        });
+    });
+}
+
+// Определение типа текущей страницы
+function getCurrentPageType() {
+    const path = window.location.pathname;
+
+    if (path.includes('products')) return 'products';
+    if (path.includes('sales')) return 'sales';
+    if (path.includes('reports')) return 'reports';
+    if (path.includes('profit')) return 'profit';
+
+    return 'dashboard';
+}
+
+// Экспорт данных
+function exportData(type = 'dashboard') {
+    showToast(`Подготовка экспорта ${type}...`, 2000);
+
+    setTimeout(() => {
+        let csvData = '';
+        let filename = '';
+
+        switch(type) {
+            case 'products':
+                csvData = generateProductsCSV();
+                filename = `suram_products_export_${new Date().toISOString().split('T')[0]}.csv`;
+                break;
+            case 'sales':
+                csvData = generateSalesCSV();
+                filename = `suram_sales_export_${new Date().toISOString().split('T')[0]}.csv`;
+                break;
+            case 'reports':
+            case 'profit':
+                csvData = generateReportsCSV();
+                filename = `suram_reports_export_${new Date().toISOString().split('T')[0]}.csv`;
+                break;
+            default:
+                csvData = generateDashboardCSV();
+                filename = `suram_export_${new Date().toISOString().split('T')[0]}.csv`;
+        }
+
+        showToast('Экспорт завершен! Файл готов к скачиванию.', 3000);
+
+        // Создаем временную ссылку для скачивания
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvData);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }, 2000);
+}
+
+// Генерация CSV для товаров
+function generateProductsCSV() {
+    return `Наименование,Категория,Остаток,Цена закупки,Цена продажи,Статус,Дата добавления
+"Смартфон iPhone 15 Pro","Электроника",42,75000,89990,"В наличии","2024-11-15"
+"Ноутбук ASUS ROG Strix","Электроника",8,130000,149990,"Мало","2024-10-20"
+"Наушники Sony WH-1000XM5","Аудио",0,30000,34990,"Нет в наличии","2024-09-05"
+"Новогодняя ёлка 180см","Праздник",15,5000,7990,"В наличии","2024-12-01"
+"Гирлянда LED 10м","Праздник",23,1200,1990,"В наличии","2024-11-28"
+"Подарочный набор","Праздник",12,3500,4990,"В наличии","2024-12-10"`;
+}
+
+// Генерация CSV для продаж
+function generateSalesCSV() {
+    return `Номер продажи,Товар,Количество,Цена продажи,Общая сумма,Дата продажи,Статус
+"#4892","Смартфон iPhone 15 Pro",1,89990,89990,"2024-12-25 14:30","Завершено"
+"#4891","Ноутбук ASUS ROG Strix",2,149990,299980,"2024-12-24 18:15","Завершено"
+"#4890","Наушники Sony WH-1000XM5",3,34990,104970,"2024-12-23 11:45","Завершено"
+"#4889","Новогодний набор",5,4990,24950,"2024-12-22 09:20","Завершено"
+"#4888","Смартфон Samsung Galaxy S23",1,74990,74990,"2024-12-21 16:30","Завершено"`;
+}
+
+// Генерация CSV для отчетов
+function generateReportsCSV() {
+    return `Период,Выручка (Revenue),Себестоимость (Cost),Прибыль (Profit),Количество продаж,Продано товаров,Средний чек
+"01.12.2024 - 25.12.2024",1247800,945200,302600,89,247,14020
+"01.11.2024 - 30.11.2024",1120500,875000,245500,76,215,14743
+"01.10.2024 - 31.10.2024",985600,745000,240600,68,189,14494`;
+}
+
+// Генерация CSV для дашборда
+function generateDashboardCSV() {
+    return `Метрика,Значение,Дата обновления
+"Товаров в системе",1247,"2024-12-25"
+"Выручка сегодня",89430,"2024-12-25"
+"Эффективность",94.2,"2024-12-25"
+"Продаж за день",247,"2024-12-25"
+"Популярные товары","Смартфон iPhone 15 Pro, Ноутбук ASUS ROG Strix","2024-12-25"`;
+}
+
 // Вспомогательные функции
 function showToast(message, duration = 2000) {
     // Удаляем старый тост, если есть
@@ -515,4 +869,47 @@ window.addEventListener('resize', function() {
             initSnowflakes();
         }
     }, 250);
+});
+
+// Глобальные функции для работы с корзиной (если нужно)
+window.addToCart = function(productId, productName, price, quantity = 1) {
+    // Здесь будет логика добавления в корзину
+    showToast(`Добавлено в корзину: ${productName} (${quantity} шт.)`);
+
+    // Можно сохранять в localStorage
+    const cart = JSON.parse(localStorage.getItem('suram_cart') || '[]');
+    const existingItem = cart.find(item => item.id === productId);
+
+    if (existingItem) {
+        existingItem.quantity += quantity;
+    } else {
+        cart.push({
+            id: productId,
+            name: productName,
+            price: price,
+            quantity: quantity
+        });
+    }
+
+    localStorage.setItem('suram_cart', JSON.stringify(cart));
+
+    // Обновление счетчика корзины
+    updateCartCount();
+};
+
+window.updateCartCount = function() {
+    const cart = JSON.parse(localStorage.getItem('suram_cart') || '[]');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    // Обновляем бейдж корзины, если есть
+    const cartBadge = document.querySelector('.cart-badge');
+    if (cartBadge) {
+        cartBadge.textContent = totalItems;
+        cartBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+};
+
+// Инициализация корзины при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    window.updateCartCount();
 });
