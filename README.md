@@ -1,3 +1,4 @@
+HEAD
 # Мини-склад «Товары и продажи»
 
 Веб-приложение на Django для учёта товаров, продаж и отчёта по прибыли.
@@ -49,3 +50,5 @@ python mini_warehouse/manage.py runserver
 - `apps/sales` — продажи и бизнес-логика списания.
 - `apps/reports` — отчёты.
 - `templates/` и `static/` — серверные страницы и стили.
+
+origin/main
