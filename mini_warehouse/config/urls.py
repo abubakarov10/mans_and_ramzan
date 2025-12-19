@@ -1,9 +1,11 @@
 from django.contrib import admin
-from django.urls import path, include
-from django.shortcuts import render
+from django.shortcuts import redirect
+from django.urls import include, path
+
 
 def dashboard(request):
-    return render(request, 'base.html')
+    return redirect('products:list')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),

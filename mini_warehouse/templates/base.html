@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru" data-theme="newyear">
 <head>
@@ -14,8 +15,8 @@
           rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/theme.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 
 <body data-theme="newyear">
@@ -27,19 +28,19 @@
 <!-- NAVBAR -->
 <nav class="navbar">
     <div class="container nav-container">
-        <a href="/" class="logo">
+        <a href="{% url 'products:list' %}" class="logo">
             <div class="logo-icon">🎄</div>
             <div class="logo-text">SuRam <span class="year">2025</span></div>
         </a>
 
         <div class="desktop-menu">
             <ul class="nav-list">
-                <li><a href="base.html" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
-                <li><a href="./products/list.html" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
-                <li><a href="./sales/list.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
-                <li><a href="./reports/profit.html" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li><a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="{% url 'sales:list' %}" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="{% url 'reports:profit' %}" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
                 <li>
-                    <a href="/sales/new/" class="btn btn-danger">
+                    <a href="{% url 'sales:create' %}" class="btn btn-danger">
                         <i class="fas fa-bolt"></i> Новая продажа
                     </a>
                 </li>
@@ -139,7 +140,7 @@
                 <div class="card-header">
                     <h3><i class="fas fa-fire"></i> Популярные товары</h3>
                     <div class="card-actions">
-                        <a href="./products/list.html" class="btn btn-small btn-secondary">Все товары →</a>
+                        <a href="{% url 'products:list' %}" class="btn btn-small btn-secondary">Все товары →</a>
                         <button class="btn btn-small btn-primary" id="openAddPanelBtn">
                             <i class="fas fa-plus"></i> Добавить товар
                         </button>
@@ -198,7 +199,7 @@
                                                 <div class="product-name">Ноутбук ASUS ROG Strix</div>
                                                 <div class="product-sku">SKU: ASUS-ROG-G18</div>
                                                 <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
-                                                    <i class="fas fa-user-tie"></i> Коллега
+                                                    <i class="fas fa-user"></i> Ваш товар
                                                 </div>
                                             </div>
                                         </div>
@@ -212,22 +213,22 @@
                                             <button class="btn-icon btn-sell" data-product="ASUS ROG Strix" data-product-id="2">
                                                 <i class="fas fa-bolt"></i>
                                             </button>
-                                            <button class="btn-icon btn-edit disabled" title="Нельзя редактировать чужие товары" data-product="ASUS ROG Strix" data-product-id="2">
+                                            <button class="btn-icon btn-edit" data-product="ASUS ROG Strix" data-product-id="2">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button class="btn-icon btn-delete disabled" title="Нельзя удалять чужие товары" data-product="ASUS ROG Strix" data-product-id="2">
+                                            <button class="btn-icon btn-delete" data-product="ASUS ROG Strix" data-product-id="2">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr data-product-id="3" data-owner="user123">
+                                <tr data-product-id="3" data-owner="user789">
                                     <td>
                                         <div class="product-info">
                                             <div class="product-icon">🎧</div>
                                             <div>
                                                 <div class="product-name">Наушники Sony WH-1000XM5</div>
-                                                <div class="product-sku">SKU: SON-WH1000XM5</div>
+                                                <div class="product-sku">SKU: SONY-WH1000XM5</div>
                                                 <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
                                                     <i class="fas fa-user"></i> Ваш товар
                                                 </div>
@@ -240,8 +241,8 @@
                                     <td><span class="status status-out">Нет в наличии</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon btn-order" data-product="Sony WH-1000XM5" data-product-id="3">
-                                                <i class="fas fa-shopping-cart"></i>
+                                            <button class="btn-icon btn-sell" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-bolt"></i>
                                             </button>
                                             <button class="btn-icon btn-edit" data-product="Sony WH-1000XM5" data-product-id="3">
                                                 <i class="fas fa-edit"></i>
@@ -257,394 +258,18 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Динамика продаж за неделю -->
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-chart-line"></i> Динамика продаж за неделю</h3>
-                    <div class="week-info">
-                        <span class="current-week">Текущая неделя</span>
-                        <span class="revenue-week">+15% к прошлой неделе</span>
-                    </div>
-                </div>
-                <div class="sales-chart">
-                    <div class="chart-bars">
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="42100" style="height: 40%">
-                                <div class="bar-value">₽42,100</div>
-                            </div>
-                            <div class="chart-label">Пн</div>
-                        </div>
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="68500" style="height: 65%">
-                                <div class="bar-value">₽68,500</div>
-                            </div>
-                            <div class="chart-label">Вт</div>
-                        </div>
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="31200" style="height: 30%">
-                                <div class="bar-value">₽31,200</div>
-                            </div>
-                            <div class="chart-label">Ср</div>
-                        </div>
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="84300" style="height: 80%">
-                                <div class="bar-value">₽84,300</div>
-                            </div>
-                            <div class="chart-label">Чт</div>
-                        </div>
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="57800" style="height: 55%">
-                                <div class="bar-value">₽57,800</div>
-                            </div>
-                            <div class="chart-label">Пт</div>
-                        </div>
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="94600" style="height: 90%">
-                                <div class="bar-value">₽94,600</div>
-                            </div>
-                            <div class="chart-label">Сб</div>
-                        </div>
-                        <div class="chart-bar-container">
-                            <div class="chart-bar" data-value="63100" style="height: 60%">
-                                <div class="bar-value">₽63,100</div>
-                            </div>
-                            <div class="chart-label">Вс</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart-stats">
-                    <div class="stat-item">
-                        <div class="stat-icon">💰</div>
-                        <div>
-                            <div class="stat-label">Общая выручка</div>
-                            <div class="stat-value">₽ 441,600</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">📦</div>
-                        <div>
-                            <div class="stat-label">Продано товаров</div>
-                            <div class="stat-value">1,247 шт.</div>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">📈</div>
-                        <div>
-                            <div class="stat-label">Средний чек</div>
-                            <div class="stat-value">₽ 3,540</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
-
-        <!-- RIGHT SIDEBAR -->
-        <aside class="dashboard-sidebar">
-            <!-- Быстрые действия -->
-            <div class="card">
-                <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
-                <div class="quick-actions">
-                    <a href="./sales/new/" class="quick-action-btn quick-sale" data-action="quick-sale">
-                        <div class="action-icon">🛒</div>
-                        <div>
-                            <div class="action-title">Быстрая продажа</div>
-                            <div class="action-desc">Продать товар за 30 секунд</div>
-                        </div>
-                        <div class="action-badge">🔥</div>
-                    </a>
-                    <a href="./sales/pro/" class="quick-action-btn pro-sale" data-action="pro-sale">
-                        <div class="action-icon">📋</div>
-                        <div>
-                            <div class="action-title">Профессиональная продажа</div>
-                            <div class="action-desc">Подробная работа с клиентом</div>
-                        </div>
-                        <div class="action-badge">👑</div>
-                    </a>
-                    <button class="quick-action-btn create-report" data-action="create-report" onclick="generateReport()">
-                        <div class="action-icon">📊</div>
-                        <div>
-                            <div class="action-title">Создать отчёт</div>
-                            <div class="action-desc">Генерация отчёта за период</div>
-                        </div>
-                        <div class="action-badge">📈</div>
-                    </button>
-                    <button class="quick-action-btn export-data" data-action="export-data" onclick="openExportModal()">
-                        <div class="action-icon">📤</div>
-                        <div>
-                            <div class="action-title">Экспорт данных</div>
-                            <div class="action-desc">Выгрузить в Excel/CSV</div>
-                        </div>
-                        <div class="action-badge">💾</div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Уведомления -->
-            <div class="card notifications-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-bell"></i> Уведомления</h3>
-                    <div class="notifications-header-actions">
-                        <span class="badge notification-count">3</span>
-                        <button class="btn-icon btn-clear-all" title="Очистить все уведомления">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="notifications">
-                    <div class="notification new" data-id="1">
-                        <div class="notification-icon">✅</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Заказ #4892 выполнен</div>
-                            <div class="notification-desc">Смартфон iPhone 15 Pro продан</div>
-                            <div class="notification-time" data-time="2024-12-25T14:30:00">6 минут назад</div>
-                        </div>
-                        <button class="notification-close" data-id="1"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="notification new" data-id="2">
-                        <div class="notification-icon">⚠️</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Заканчивается товар</div>
-                            <div class="notification-desc">Ноутбук ASUS ROG Strix</div>
-                            <div class="notification-stock">Осталось 3 шт.</div>
-                            <div class="notification-time" data-time="2024-12-25T13:15:00">1 час назад</div>
-                        </div>
-                        <button class="notification-close" data-id="2"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="notification" data-id="3">
-                        <div class="notification-icon">📦</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Поставка прибыла</div>
-                            <div class="notification-desc">15 новых товаров на склад</div>
-                            <div class="notification-time" data-time="2024-12-25T12:00:00">2 часа назад</div>
-                        </div>
-                        <button class="notification-close" data-id="3"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="notification" data-id="4">
-                        <div class="notification-icon">🎄</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Новогодняя акция</div>
-                            <div class="notification-desc">Скидка 15% на праздничные товары</div>
-                            <div class="notification-time" data-time="2024-12-24T10:00:00">1 день назад</div>
-                        </div>
-                        <button class="notification-close" data-id="4"><i class="fas fa-times"></i></button>
-                    </div>
-                </div>
-                <div class="notification-controls">
-                    <button class="btn btn-small btn-secondary mark-all-read">
-                        <i class="fas fa-check-double"></i> Отметить все как прочитанные
-                    </button>
-                </div>
-            </div>
-
-            <!-- Статистика склада -->
-            <div class="card">
-                <h3><i class="fas fa-warehouse"></i> Статистика склада</h3>
-                <div class="warehouse-stats">
-                    <div class="warehouse-stat">
-                        <div class="warehouse-icon">📊</div>
-                        <div>
-                            <div class="warehouse-label">Всего товаров</div>
-                            <div class="warehouse-value">1,247</div>
-                        </div>
-                    </div>
-                    <div class="warehouse-stat warning">
-                        <div class="warehouse-icon">⚠️</div>
-                        <div>
-                            <div class="warehouse-label">Заканчиваются</div>
-                            <div class="warehouse-value">23</div>
-                        </div>
-                    </div>
-                    <div class="warehouse-stat danger">
-                        <div class="warehouse-icon">❌</div>
-                        <div>
-                            <div class="warehouse-label">Нет в наличии</div>
-                            <div class="warehouse-value">8</div>
-                        </div>
-                    </div>
-                    <div class="warehouse-stat success">
-                        <div class="warehouse-icon">✅</div>
-                        <div>
-                            <div class="warehouse-label">В наличии</div>
-                            <div class="warehouse-value">1,216</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="warehouse-time" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glass-border);">
-                    <div style="display: flex; align-items: center; gap: 8px; color: var(--gray); font-size: 0.8rem;">
-                        <i class="fas fa-clock"></i>
-                        <span>Обновлено: <span class="update-time">сегодня 15:30</span></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Популярные категории -->
-            <div class="card">
-                <h3><i class="fas fa-star"></i> Популярные категории</h3>
-                <div class="categories-list">
-                    <div class="category-item">
-                        <div class="category-icon">📱</div>
-                        <div class="category-info">
-                            <div class="category-name">Электроника</div>
-                            <div class="category-stats">42 продажи · ₽ 3,2М</div>
-                        </div>
-                        <div class="category-rank">1</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🎄</div>
-                        <div class="category-info">
-                            <div class="category-name">Новогодние товары</div>
-                            <div class="category-stats">18 продаж · ₽ 890К</div>
-                        </div>
-                        <div class="category-rank">2</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🎧</div>
-                        <div class="category-info">
-                            <div class="category-name">Аудио</div>
-                            <div class="category-stats">12 продаж · ₽ 420К</div>
-                        </div>
-                        <div class="category-rank">3</div>
-                    </div>
-                </div>
-                <div class="categories-time" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glass-border);">
-                    <div style="display: flex; align-items: center; gap: 8px; color: var(--gray); font-size: 0.8rem;">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Актуально на: <span class="categories-update">декабрь 2024</span></span>
-                    </div>
-                </div>
-            </div>
-        </aside>
     </div>
 </main>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-bottom">
-            © 2025 SuRam · С новогодним настроением · 🎄
+            © 2025 SuRam Mini-Warehouse · С новогодним настроением! · 🎄
         </div>
     </div>
 </footer>
 
-<!-- Модальное окно для экспорта -->
-<div id="exportModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-download"></i> Экспорт данных</h3>
-            <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p style="color: var(--gray); margin-bottom: 1.5rem;">Выберите данные для экспорта:</p>
-
-            <div class="export-options">
-                <div class="export-option">
-                    <input type="radio" id="exportDashboard" name="exportType" value="dashboard" checked>
-                    <label for="exportDashboard">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <div>
-                            <div class="export-title">Дашборд</div>
-                            <div class="export-desc">Ключевые метрики и статистика</div>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="export-option">
-                    <input type="radio" id="exportProducts" name="exportType" value="products">
-                    <label for="exportProducts">
-                        <i class="fas fa-boxes"></i>
-                        <div>
-                            <div class="export-title">Каталог товаров</div>
-                            <div class="export-desc">Все товары с ценами и остатками</div>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="export-option">
-                    <input type="radio" id="exportSales" name="exportType" value="sales">
-                    <label for="exportSales">
-                        <i class="fas fa-shopping-cart"></i>
-                        <div>
-                            <div class="export-title">История продаж</div>
-                            <div class="export-desc">Все транзакции за период</div>
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            <div class="export-period" style="margin-top: 1.5rem;">
-                <label style="display: block; margin-bottom: 8px; color: var(--light); font-weight: 600;">
-                    <i class="fas fa-calendar"></i> Период экспорта
-                </label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="date" class="form-control" id="exportDateFrom" value="2024-12-01">
-                    <input type="date" class="form-control" id="exportDateTo" value="2024-12-25">
-                </div>
-            </div>
-
-            <div class="export-actions" style="display: flex; gap: 15px; margin-top: 2rem;">
-                <button class="btn btn-secondary modal-close" style="flex: 1;">Отмена</button>
-                <button class="btn btn-success" onclick="exportSelectedData()" style="flex: 2;">
-                    <i class="fas fa-download"></i> Экспортировать
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Модальное окно редактирования товара -->
-<div id="editProductModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-edit"></i> Редактирование товара</h3>
-            <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="edit-product-form">
-                <div class="form-group">
-                    <label><i class="fas fa-tag"></i> Название товара</label>
-                    <input type="text" id="editProductName" class="form-control" value="Смартфон iPhone 15 Pro">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label><i class="fas fa-box"></i> Остаток</label>
-                        <input type="number" id="editProductStock" class="form-control" min="0" value="42">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-dollar-sign"></i> Цена</label>
-                        <input type="number" id="editProductPrice" class="form-control" min="0" value="89990">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fas fa-tags"></i> Категория</label>
-                    <select id="editProductCategory" class="form-control">
-                        <option value="Электроника">Электроника</option>
-                        <option value="Аудио">Аудио</option>
-                        <option value="Праздник">Праздник</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle"></i> Описание</label>
-                    <textarea id="editProductDescription" class="form-control" rows="3">Флагманский смартфон Apple</textarea>
-                </div>
-
-                <div class="edit-actions" style="display: flex; gap: 15px; margin-top: 2rem;">
-                    <button class="btn btn-secondary modal-close" style="flex: 1;">Отмена</button>
-                    <button class="btn btn-primary" onclick="saveProductChanges()" style="flex: 2;">
-                        <i class="fas fa-save"></i> Сохранить изменения
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- JS -->
-<script src="../static/js/main.js"></script>
-<script src="../static/js/dashboard.js"></script>
-
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
