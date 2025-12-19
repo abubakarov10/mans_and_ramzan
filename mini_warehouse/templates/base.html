@@ -1,10 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru" data-theme="newyear">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}🎄 SuRam - Главная{% endblock %}</title>
+    <title>🎄 SuRam - Главная</title>
 
     <!-- Icons -->
     <link rel="stylesheet"
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 
-<body>
+<body data-theme="newyear">
 
 <!-- Background -->
 <div class="newyear-bg"></div>
@@ -28,30 +28,17 @@
 <!-- NAVBAR -->
 <nav class="navbar">
     <div class="container nav-container">
-        <a href="{% url 'dashboard' %}" class="logo">
+        <a href="{% url 'products:list' %}" class="logo">
             <div class="logo-icon">🎄</div>
             <div class="logo-text">SuRam <span class="year">2025</span></div>
         </a>
 
         <div class="desktop-menu">
             <ul class="nav-list">
-                <li><a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
                 <li><a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
                 <li><a href="{% url 'sales:list' %}" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
                 <li><a href="{% url 'reports:profit' %}" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
-                <li class="nav-dropdown">
-                    <button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false">
-                        <i class="fas fa-ellipsis-h"></i> Дополнительно
-                    </button>
-                    <div class="nav-dropdown-menu">
-                        <a href="{% url 'about' %}" class="nav-dropdown-link">
-                            <i class="fas fa-info-circle"></i> О нас
-                        </a>
-                        <button class="nav-dropdown-link theme-toggle" type="button" data-theme-toggle>
-                            <i class="fas fa-adjust"></i> Light/Dark
-                        </button>
-                    </div>
-                </li>
                 <li>
                     <a href="{% url 'sales:create' %}" class="btn btn-danger">
                         <i class="fas fa-bolt"></i> Новая продажа
@@ -61,7 +48,7 @@
         </div>
 
         <div class="mobile-menu">
-            <button class="theme-toggle-mobile" type="button" data-theme-toggle>
+            <button class="theme-toggle-mobile" id="themeToggleMobile">
                 <i class="fas fa-palette"></i>
             </button>
             <button class="menu-toggle" id="menuToggle">
@@ -71,29 +58,208 @@
     </div>
 </nav>
 
-<div class="mobile-drawer" id="mobileDrawer">
-    <ul class="mobile-nav-list">
-        <li><a href="{% url 'dashboard' %}" class="mobile-nav-link"><i class="fas fa-home"></i> Главная</a></li>
-        <li><a href="{% url 'products:list' %}" class="mobile-nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
-        <li><a href="{% url 'sales:list' %}" class="mobile-nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
-        <li><a href="{% url 'reports:profit' %}" class="mobile-nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
-        <li><a href="{% url 'about' %}" class="mobile-nav-link"><i class="fas fa-info-circle"></i> О нас</a></li>
-        <li>
-            <button class="mobile-nav-link mobile-theme-toggle" type="button" data-theme-toggle>
-                <i class="fas fa-adjust"></i> Light/Dark
-            </button>
-        </li>
-        <li>
-            <a href="{% url 'sales:create' %}" class="btn btn-danger mobile-nav-cta">
-                <i class="fas fa-bolt"></i> Новая продажа
-            </a>
-        </li>
-    </ul>
+<!-- Панель быстрого добавления товара (скрыта по умолчанию) -->
+<div id="addProductPanel" class="add-product-panel">
+    <div class="add-product-content">
+        <div class="add-product-header">
+            <h3><i class="fas fa-plus-circle"></i> Быстрое добавление товара</h3>
+            <button class="close-panel-btn">&times;</button>
+        </div>
+        <div class="add-product-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Название товара</label>
+                    <input type="text" id="productName" placeholder="Например: Смартфон iPhone 15 Pro" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tags"></i> Категория</label>
+                    <select id="productCategory" class="form-control">
+                        <option value="">Выберите категорию</option>
+                        <option value="Электроника">📱 Электроника</option>
+                        <option value="Аудио">🎧 Аудио</option>
+                        <option value="Праздник">🎄 Праздник</option>
+                        <option value="Бытовая техника">🏠 Бытовая техника</option>
+                        <option value="Канцелярия">✏️ Канцелярия</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-box"></i> Начальный остаток</label>
+                    <input type="number" id="productStock" min="0" value="10" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-dollar-sign"></i> Цена продажи</label>
+                    <input type="number" id="productPrice" min="0" value="1000" class="form-control">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary close-panel-btn">Отмена</button>
+                <button class="btn btn-success" id="addProductBtn">
+                    <i class="fas fa-check"></i> Добавить товар
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- MAIN -->
 <main class="container">
-    {% block content %}{% endblock %}
+    <div class="main-grid">
+        <!-- LEFT CONTENT -->
+        <section class="dashboard-left">
+            <!-- Ключевые метрики -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">🎁</div>
+                    <div class="metric-value">1,247</div>
+                    <div class="metric-label">ТОВАРОВ В СИСТЕМЕ</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-value">₽ 89,430</div>
+                    <div class="metric-label">ВЫРУЧКА СЕГОДНЯ</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-value">94.2%</div>
+                    <div class="metric-label">ЭФФЕКТИВНОСТЬ</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">🛒</div>
+                    <div class="metric-value">247</div>
+                    <div class="metric-label">ПРОДАЖ ЗА ДЕНЬ</div>
+                </div>
+            </div>
+
+            <!-- Таблица популярных товаров -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-fire"></i> Популярные товары</h3>
+                    <div class="card-actions">
+                        <a href="{% url 'products:list' %}" class="btn btn-small btn-secondary">Все товары →</a>
+                        <button class="btn btn-small btn-primary" id="openAddPanelBtn">
+                            <i class="fas fa-plus"></i> Добавить товар
+                        </button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-cube"></i> Название</th>
+                                    <th><i class="fas fa-tag"></i> Категория</th>
+                                    <th><i class="fas fa-box"></i> Остаток</th>
+                                    <th><i class="fas fa-tag"></i> Цена</th>
+                                    <th><i class="fas fa-circle"></i> Статус</th>
+                                    <th><i class="fas fa-cog"></i> Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-product-id="1" data-owner="user123">
+                                    <td>
+                                        <div class="product-info">
+                                            <div class="product-icon">📱</div>
+                                            <div>
+                                                <div class="product-name">Смартфон iPhone 15 Pro</div>
+                                                <div class="product-sku">SKU: APP-IP15P-256</div>
+                                                <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                                                    <i class="fas fa-user"></i> Ваш товар
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="category-badge">Электроника</span></td>
+                                    <td><span class="stock-count">42 шт.</span></td>
+                                    <td><span class="price">₽ 89,990</span></td>
+                                    <td><span class="status status-in-stock">В наличии</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon btn-sell" data-product="iPhone 15 Pro" data-product-id="1">
+                                                <i class="fas fa-bolt"></i>
+                                            </button>
+                                            <button class="btn-icon btn-edit" data-product="iPhone 15 Pro" data-product-id="1">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete" data-product="iPhone 15 Pro" data-product-id="1">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-product-id="2" data-owner="user456">
+                                    <td>
+                                        <div class="product-info">
+                                            <div class="product-icon">💻</div>
+                                            <div>
+                                                <div class="product-name">Ноутбук ASUS ROG Strix</div>
+                                                <div class="product-sku">SKU: ASUS-ROG-G18</div>
+                                                <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                                                    <i class="fas fa-user"></i> Ваш товар
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="category-badge">Электроника</span></td>
+                                    <td><span class="stock-count">8 шт.</span></td>
+                                    <td><span class="price">₽ 149,990</span></td>
+                                    <td><span class="status status-low">Мало</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon btn-sell" data-product="ASUS ROG Strix" data-product-id="2">
+                                                <i class="fas fa-bolt"></i>
+                                            </button>
+                                            <button class="btn-icon btn-edit" data-product="ASUS ROG Strix" data-product-id="2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete" data-product="ASUS ROG Strix" data-product-id="2">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-product-id="3" data-owner="user789">
+                                    <td>
+                                        <div class="product-info">
+                                            <div class="product-icon">🎧</div>
+                                            <div>
+                                                <div class="product-name">Наушники Sony WH-1000XM5</div>
+                                                <div class="product-sku">SKU: SONY-WH1000XM5</div>
+                                                <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                                                    <i class="fas fa-user"></i> Ваш товар
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="category-badge">Аудио</span></td>
+                                    <td><span class="stock-count">0 шт.</span></td>
+                                    <td><span class="price">₽ 34,990</span></td>
+                                    <td><span class="status status-out">Нет в наличии</span></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-icon btn-sell" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-bolt"></i>
+                                            </button>
+                                            <button class="btn-icon btn-edit" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </main>
 
 <footer class="footer">
