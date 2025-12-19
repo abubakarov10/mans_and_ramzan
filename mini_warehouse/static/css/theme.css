@@ -364,6 +364,20 @@ body {
     font-family: inherit;
 }
 
+.form-control[type="number"] {
+    padding-right: 3.2rem;
+}
+
+.form-control[type="number"]::-webkit-inner-spin-button,
+.form-control[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+    margin: 0;
+    width: 2.4rem;
+    border-left: 1px solid var(--glass-border);
+    background: linear-gradient(180deg, rgba(255, 107, 107, 0.25), rgba(255, 255, 255, 0.05));
+    border-radius: 0 10px 10px 0;
+}
+
 .form-control:focus {
     border-color: var(--primary);
     background: rgba(255, 255, 255, 0.1);
@@ -388,6 +402,31 @@ select.form-control {
     background-position: right 1.2rem center;
     background-size: 12px;
     padding-right: 3rem;
+}
+
+select.form-control option {
+    background: rgba(18, 28, 28, 0.98);
+    color: var(--light);
+}
+
+select.form-control option:disabled {
+    color: var(--gray);
+}
+
+/* Компактные сообщения */
+.flash-messages {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.flash-messages .success-message,
+.flash-messages .error-message {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
 }
 
 /* Ошибки валидации */

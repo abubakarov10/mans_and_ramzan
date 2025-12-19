@@ -900,6 +900,15 @@
     .product-name {
         font-size: 0.85rem;
     }
+
+    .search-box {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .search-box .form-control {
+        min-width: 0;
+    }
 }
 
 @media (max-width: 480px) {
@@ -939,6 +948,15 @@
     .card-actions {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    .search-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box .btn {
+        width: 100%;
     }
 }
 
@@ -1031,10 +1049,15 @@ main {
     display: flex;
     gap: 8px;
     min-width: 250px;
+    align-items: center;
 }
 
 .search-box .form-control {
     flex: 1;
+}
+
+.search-box .btn {
+    min-width: 44px;
 }
 
 /* Фильтры */

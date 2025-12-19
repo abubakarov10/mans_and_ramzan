@@ -76,4 +76,52 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.animationDelay = `${index * 0.1}s`;
         card.classList.add('fade-in');
     });
+
+    initProductSearch();
 });
+
+function initProductSearch() {
+    const searchBox = document.querySelector('.search-box');
+    if (!searchBox) return;
+
+    const searchInput = searchBox.querySelector('input');
+    const searchButton = searchBox.querySelector('button');
+    const tableBody = document.querySelector('.table tbody');
+
+    if (!searchInput || !searchButton || !tableBody) return;
+
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    const dataRows = rows.filter(row => !row.querySelector('td[colspan]'));
+    const emptyRow = rows.find(row => row.querySelector('td[colspan]'));
+
+    const applySearch = (query) => {
+        const normalized = query.trim().toLowerCase();
+        let matches = 0;
+
+        dataRows.forEach((row) => {
+            const text = row.textContent.toLowerCase();
+            const isMatch = normalized === '' || text.includes(normalized);
+            row.style.display = isMatch ? '' : 'none';
+            if (isMatch) {
+                matches += 1;
+            }
+        });
+
+        if (emptyRow) {
+            emptyRow.style.display = matches === 0 ? '' : 'none';
+        }
+
+        if (normalized && matches === 0) {
+            showNotification(`По запросу "${query}" ничего не найдено`, 'error');
+        }
+    };
+
+    searchInput.addEventListener('input', () => applySearch(searchInput.value));
+    searchButton.addEventListener('click', () => applySearch(searchInput.value));
+    searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            applySearch(searchInput.value);
+        }
+    });
+}

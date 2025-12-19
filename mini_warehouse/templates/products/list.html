@@ -33,9 +33,16 @@
 
 <main class="container">
     {% if messages %}
-        <div class="card" style="margin-bottom: 20px;">
+        <div class="flash-messages">
             {% for message in messages %}
-                <div>{{ message }}</div>
+                <div class="{{ message.tags|default:'success' }}-message">
+                    {% if message.tags == 'error' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-check-circle"></i>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
             {% endfor %}
         </div>
     {% endif %}
@@ -49,8 +56,10 @@
         <div class="card-header">
             <h3>Список товаров</h3>
             <div class="search-box">
-                <input type="text" placeholder="Поиск товаров..." class="form-control">
-                <button class="btn btn-secondary"><i class="fas fa-search"></i></button>
+                <input type="text" placeholder="Поиск товаров..." class="form-control" aria-label="Поиск товаров">
+                <button class="btn btn-secondary" type="button" aria-label="Искать товары">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
         </div>
 
