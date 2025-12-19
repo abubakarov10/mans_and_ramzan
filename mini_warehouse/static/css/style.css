@@ -781,6 +781,58 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+.mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: var(--glass);
+    border-bottom: 2px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    padding: 1rem 0;
+    z-index: 999;
+}
+
+.mobile-drawer.is-open {
+    display: block;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mobile-nav-link {
+    color: var(--light);
+    text-decoration: none;
+    padding: 0.7rem 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    background: transparent;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.mobile-nav-link:hover {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: var(--newyear-red);
+}
+
+.mobile-nav-cta {
+    width: 100%;
+    justify-content: center;
+}
+
 /* ===== СНЕЖИНКИ ===== */
 .snowflake {
     position: absolute;
@@ -836,6 +888,7 @@
     .mobile-menu {
         display: flex;
     }
+
 }
 
 @media (max-width: 768px) {
