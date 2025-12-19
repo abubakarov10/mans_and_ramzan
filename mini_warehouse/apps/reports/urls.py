@@ -1,8 +1,6 @@
 from django.urls import path
-from . import views  # <- обязательно локальный импорт views
-
-app_name = 'reports'  # пространство имён приложения
+from .views import report_view
 
 urlpatterns = [
-    path('profit/', views.profit_report, name='profit'),
+    path('', report_view),
 ]

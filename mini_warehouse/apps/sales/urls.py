@@ -1,9 +1,6 @@
 from django.urls import path
-from . import views  # <- обязательно импортируем views
-
-app_name = 'sales'  # пространство имён приложения
+from .views import quick_sale
 
 urlpatterns = [
-    path('', views.sales_list, name='list'),
-    path('new/', views.sales_create, name='new'),
+    path('sell/<int:product_id>/', quick_sale, name='quick_sale'),
 ]

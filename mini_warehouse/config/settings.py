@@ -1,18 +1,13 @@
-# settings.py
-
-import os
 from pathlib import Path
 
-# Путь к корню проекта
+from django.conf.global_settings import SECRET_KEY
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Режим отладки для локальной разработки
 DEBUG = True
-
-# Разрешённые хосты для локальной разработки
+SECRET_KEY = '12345'
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-# Приложения Django
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -20,10 +15,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # сюда добавляй свои приложения
+
+    'apps.products',
+    'apps.sales',
+    'apps.reports',
 ]
 
-# Миддлвары
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -31,17 +28,14 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Главный URL конфиг
-ROOT_URLCONF = 'mini_warehouse.urls'  # или путь к твоему urls.py
+ROOT_URLCONF = 'config.urls'
 
-# Шаблоны
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # 👈 base.html
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -54,10 +48,6 @@ TEMPLATES = [
     },
 ]
 
-# WSGI
-WSGI_APPLICATION = 'mini_warehouse.wsgi.application'
-
-# База данных (SQLite для локальной разработки)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -65,17 +55,11 @@ DATABASES = {
     }
 }
 
-# Пароли
-AUTH_PASSWORD_VALIDATORS = []
-
-# Язык и часовой пояс
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 TIME_ZONE = 'UTC'
-USE_I18N = True
 USE_TZ = True
 
-# Статика
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-

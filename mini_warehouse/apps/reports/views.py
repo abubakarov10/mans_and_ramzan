@@ -1,5 +1,4 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-def profit_report(request):
-    return render(request, 'reports/profit.html', {})
-
+def report_view(request):
+    return HttpResponse('Reports coming soon')
