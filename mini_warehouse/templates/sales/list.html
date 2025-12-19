@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru" data-theme="newyear">
 <head>
@@ -14,8 +15,8 @@
           rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/mini_warehouse/static/css/style.css">
-    <link rel="stylesheet" href="/mini_warehouse/static/css/theme.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 
 <body data-theme="newyear">
@@ -27,19 +28,39 @@
 <!-- NAVBAR -->
 <nav class="navbar">
     <div class="container nav-container">
-        <a href="/" class="logo">
+        <a href="{% url 'dashboard' %}" class="logo">
             <div class="logo-icon">🎄</div>
             <div class="logo-text">SuRam <span class="year">2025</span></div>
         </a>
 
         <div class="desktop-menu">
             <ul class="nav-list">
-                <li><a href="../base.html" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
-                <li><a href="../products/list.html" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
-                <li><a href="../sales/list.html" class="nav-link active"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
-                <li><a href="../reports/profit.html" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li><a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="{% url 'sales:list' %}" class="nav-link active"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="{% url 'reports:profit' %}" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li class="nav-dropdown">
+                    <button class="nav-link nav-dropdown-toggle" type="button" data-dropdown-toggle>
+                        <i class="fas fa-ellipsis-h"></i> Дополнительно
+                    </button>
+                    <div class="nav-dropdown-menu" data-dropdown-menu>
+                        <a href="{% url 'about' %}" class="dropdown-link">
+                            <i class="fas fa-circle-info"></i> О нас
+                        </a>
+                        <div class="dropdown-section">
+                            <div class="theme-switch" aria-label="Переключение темы">
+                                <button type="button" class="theme-switch-btn" data-theme-value="light">
+                                    <i class="fas fa-sun"></i> Светлая
+                                </button>
+                                <button type="button" class="theme-switch-btn" data-theme-value="newyear">
+                                    <i class="fas fa-moon"></i> Тёмная
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <li>
-                    <a href="sale-new.html" class="btn btn-danger">
+                    <a href="{% url 'sales:create' %}" class="btn btn-danger">
                         <i class="fas fa-bolt"></i> Новая продажа
                     </a>
                 </li>
@@ -57,10 +78,56 @@
     </div>
 </nav>
 
+<div class="mobile-drawer-backdrop" data-drawer-backdrop></div>
+<div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-header">
+        <div class="mobile-drawer-title">Меню</div>
+        <button type="button" class="mobile-drawer-close" data-drawer-close aria-label="Закрыть меню">&times;</button>
+    </div>
+    <div class="mobile-drawer-nav">
+        <a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-home"></i> Главная</a>
+        <a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-boxes"></i> Товары</a>
+        <a href="{% url 'sales:list' %}" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a>
+        <a href="{% url 'reports:profit' %}" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a>
+        <a href="{% url 'about' %}" class="nav-link"><i class="fas fa-circle-info"></i> О нас</a>
+        <a href="{% url 'sales:create' %}" class="btn btn-danger"><i class="fas fa-bolt"></i> Новая продажа</a>
+        <div class="dropdown-section">
+            <div class="theme-switch" aria-label="Переключение темы">
+                <button type="button" class="theme-switch-btn" data-theme-value="light">
+                    <i class="fas fa-sun"></i> Светлая
+                </button>
+                <button type="button" class="theme-switch-btn" data-theme-value="newyear">
+                    <i class="fas fa-moon"></i> Тёмная
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- MAIN -->
 <main class="container">
+    {% if messages %}
+        <div class="toast-container">
+            {% for message in messages %}
+                <div class="toast toast-{{ message.tags|default:'info' }}">
+                    <div class="toast-icon">
+                        {% if 'success' in message.tags %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elif 'error' in message.tags %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="toast-content">{{ message }}</div>
+                    <button class="toast-close" type="button" aria-label="Закрыть">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <!-- Заголовок -->
-    <div class="page-header">
+    <div class="page-header page-header--spaced">
         <h1><i class="fas fa-shopping-cart"></i> Продажи</h1>
         <div class="search-box">
             <input type="text" class="form-control" placeholder="Поиск продаж...">
@@ -73,127 +140,62 @@
     <p class="page-subtitle">История всех продаж · Фильтруйте по датам для анализа</p>
 
     <!-- Фильтры -->
-    <div class="sales-filters">
+    <form method="get" class="sales-filters sales-filters--spaced">
         <div class="filter-group">
             <label class="filter-label">
                 <i class="fas fa-calendar"></i> Дата с
             </label>
-            <input type="date" class="form-control" value="2024-12-01">
+            {{ form.date_from }}
         </div>
 
         <div class="filter-group">
             <label class="filter-label">
                 <i class="fas fa-calendar"></i> Дата по
             </label>
-            <input type="date" class="form-control" value="2024-12-25">
+            {{ form.date_to }}
         </div>
 
         <div class="filter-actions">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" type="submit">
                 <i class="fas fa-filter"></i> Применить
             </button>
-            <button class="btn btn-secondary">
+            <a class="btn btn-secondary" href="{% url 'sales:list' %}">
                 <i class="fas fa-redo"></i> Сбросить
-            </button>
+            </a>
         </div>
-    </div>
+    </form>
 
     <!-- Список продаж -->
     <div class="card">
         <div class="card-header">
             <h3><i class="fas fa-history"></i> Последние продажи</h3>
             <div class="card-actions">
-                <span class="badge">Всего: 247 продаж</span>
+                <span class="badge">Всего: {{ sales|length }} продаж</span>
             </div>
         </div>
 
-        <!-- Продажа 1 -->
-        <div class="sale-list-item">
-            <div class="sale-icon">💰</div>
-            <div class="sale-info">
-                <div class="sale-number">Продажа #4892</div>
-                <div class="sale-product">Смартфон iPhone 15 Pro</div>
-                <div class="sale-date">25 декабря 2024, 14:30</div>
+        {% for sale in sales %}
+            <div class="sale-list-item">
+                <div class="sale-icon">💰</div>
+                <div class="sale-info">
+                    <div class="sale-number">Продажа #{{ sale.id }}</div>
+                    <div class="sale-product">{{ sale.product.name }}</div>
+                    <div class="sale-date">{{ sale.sold_at|date:"d.m.Y" }}</div>
+                </div>
+                <div class="sale-details">
+                    <div class="sale-quantity">Количество: {{ sale.quantity }} шт.</div>
+                    <div class="sale-amount">₽ {{ sale.total|floatformat:2 }}</div>
+                    <span class="stock-badge stock-good">Завершено</span>
+                </div>
             </div>
-            <div class="sale-details">
-                <div class="sale-quantity">Количество: 1 шт.</div>
-                <div class="sale-amount">₽ 89,990</div>
-                <span class="stock-badge stock-good">Завершено</span>
+        {% empty %}
+            <div class="sale-list-item">
+                <div class="sale-info">
+                    <div class="sale-number">Продаж нет</div>
+                    <div class="sale-product">За выбранный период продажи отсутствуют.</div>
+                </div>
             </div>
-        </div>
-
-        <!-- Продажа 2 -->
-        <div class="sale-list-item">
-            <div class="sale-icon">💻</div>
-            <div class="sale-info">
-                <div class="sale-number">Продажа #4891</div>
-                <div class="sale-product">Ноутбук ASUS ROG Strix</div>
-                <div class="sale-date">24 декабря 2024, 18:15</div>
-            </div>
-            <div class="sale-details">
-                <div class="sale-quantity">Количество: 2 шт.</div>
-                <div class="sale-amount">₽ 299,980</div>
-                <span class="stock-badge stock-good">Завершено</span>
-            </div>
-        </div>
-
-        <!-- Продажа 3 -->
-        <div class="sale-list-item">
-            <div class="sale-icon">🎧</div>
-            <div class="sale-info">
-                <div class="sale-number">Продажа #4890</div>
-                <div class="sale-product">Наушники Sony WH-1000XM5</div>
-                <div class="sale-date">23 декабря 2024, 11:45</div>
-            </div>
-            <div class="sale-details">
-                <div class="sale-quantity">Количество: 3 шт.</div>
-                <div class="sale-amount">₽ 104,970</div>
-                <span class="stock-badge stock-good">Завершено</span>
-            </div>
-        </div>
-
-        <!-- Продажа 4 -->
-        <div class="sale-list-item">
-            <div class="sale-icon">🎁</div>
-            <div class="sale-info">
-                <div class="sale-number">Продажа #4889</div>
-                <div class="sale-product">Новогодний набор (игрушки)</div>
-                <div class="sale-date">22 декабря 2024, 09:20</div>
-            </div>
-            <div class="sale-details">
-                <div class="sale-quantity">Количество: 5 шт.</div>
-                <div class="sale-amount">₽ 24,950</div>
-                <span class="stock-badge stock-good">Завершено</span>
-            </div>
-        </div>
-
-        <!-- Продажа 5 -->
-        <div class="sale-list-item">
-            <div class="sale-icon">📱</div>
-            <div class="sale-info">
-                <div class="sale-number">Продажа #4888</div>
-                <div class="sale-product">Смартфон Samsung Galaxy S23</div>
-                <div class="sale-date">21 декабря 2024, 16:30</div>
-            </div>
-            <div class="sale-details">
-                <div class="sale-quantity">Количество: 1 шт.</div>
-                <div class="sale-amount">₽ 74,990</div>
-                <span class="stock-badge stock-good">Завершено</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Пагинация -->
-    <div class="pagination">
-        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <button class="page-btn">4</button>
-        <button class="page-btn">5</button>
-        <span class="page-info">...</span>
-        <button class="page-btn">12</button>
-        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+        {% endfor %}
     </div>
 </main>
 
@@ -206,5 +208,6 @@
     </div>
 </footer>
 
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

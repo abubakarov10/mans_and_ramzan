@@ -1,16 +1,18 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+
 
 class Sale(models.Model):
     product = models.ForeignKey(
         'products.Product',
-        on_delete=models.CASCADE,
-        related_name='sales'
+        on_delete=models.PROTECT,
+        related_name='sales',
     )
-    quantity = models.PositiveIntegerField(verbose_name='Количество')
-    sold_at = models.DateTimeField(default=timezone.now)
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    sold_at = models.DateField(default=timezone.localdate)
 
-    def price(self):
+    def sale_price(self):
         return self.product.sale_price
 
     def total(self):

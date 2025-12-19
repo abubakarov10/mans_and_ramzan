@@ -1,6 +1,8 @@
 from django.contrib import admin
+
 from .models import Sale
+
 
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ('product', 'quantity', 'price', 'total', 'sold_at')
+    list_display = ('product', 'quantity', 'sale_price', 'total', 'sold_at')
