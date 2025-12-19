@@ -57,6 +57,51 @@
     </div>
 </nav>
 
+<!-- Панель быстрого добавления товара (скрыта по умолчанию) -->
+<div id="addProductPanel" class="add-product-panel">
+    <div class="add-product-content">
+        <div class="add-product-header">
+            <h3><i class="fas fa-plus-circle"></i> Быстрое добавление товара</h3>
+            <button class="close-panel-btn">&times;</button>
+        </div>
+        <div class="add-product-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Название товара</label>
+                    <input type="text" id="productName" placeholder="Например: Смартфон iPhone 15 Pro" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tags"></i> Категория</label>
+                    <select id="productCategory" class="form-control">
+                        <option value="">Выберите категорию</option>
+                        <option value="Электроника">📱 Электроника</option>
+                        <option value="Аудио">🎧 Аудио</option>
+                        <option value="Праздник">🎄 Праздник</option>
+                        <option value="Бытовая техника">🏠 Бытовая техника</option>
+                        <option value="Канцелярия">✏️ Канцелярия</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-box"></i> Начальный остаток</label>
+                    <input type="number" id="productStock" min="0" value="10" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-dollar-sign"></i> Цена продажи</label>
+                    <input type="number" id="productPrice" min="0" value="1000" class="form-control">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary close-panel-btn">Отмена</button>
+                <button class="btn btn-success" id="addProductBtn">
+                    <i class="fas fa-check"></i> Добавить товар
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- MAIN -->
 <main class="container">
     <div class="main-grid">
@@ -95,7 +140,9 @@
                     <h3><i class="fas fa-fire"></i> Популярные товары</h3>
                     <div class="card-actions">
                         <a href="./products/list.html" class="btn btn-small btn-secondary">Все товары →</a>
-                        <a href="./products/new/" class="btn btn-small btn-primary">+ Добавить</a>
+                        <button class="btn btn-small btn-primary" id="openAddPanelBtn">
+                            <i class="fas fa-plus"></i> Добавить товар
+                        </button>
                     </div>
                 </div>
                 <div class="table-wrapper">
@@ -112,13 +159,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr data-product-id="1" data-owner="user123">
                                     <td>
                                         <div class="product-info">
                                             <div class="product-icon">📱</div>
                                             <div>
                                                 <div class="product-name">Смартфон iPhone 15 Pro</div>
                                                 <div class="product-sku">SKU: APP-IP15P-256</div>
+                                                <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                                                    <i class="fas fa-user"></i> Ваш товар
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -128,18 +178,28 @@
                                     <td><span class="status status-in-stock">В наличии</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon btn-sell" data-product="iPhone 15 Pro"><i class="fas fa-bolt"></i></button>
-                                            <button class="btn-icon btn-edit" data-product="iPhone 15 Pro"><i class="fas fa-edit"></i></button>
+                                            <button class="btn-icon btn-sell" data-product="iPhone 15 Pro" data-product-id="1">
+                                                <i class="fas fa-bolt"></i>
+                                            </button>
+                                            <button class="btn-icon btn-edit" data-product="iPhone 15 Pro" data-product-id="1">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete" data-product="iPhone 15 Pro" data-product-id="1">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr data-product-id="2" data-owner="user456">
                                     <td>
                                         <div class="product-info">
                                             <div class="product-icon">💻</div>
                                             <div>
                                                 <div class="product-name">Ноутбук ASUS ROG Strix</div>
                                                 <div class="product-sku">SKU: ASUS-ROG-G18</div>
+                                                <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                                                    <i class="fas fa-user-tie"></i> Коллега
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -149,18 +209,28 @@
                                     <td><span class="status status-low">Мало</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon btn-sell" data-product="ASUS ROG Strix"><i class="fas fa-bolt"></i></button>
-                                            <button class="btn-icon btn-edit" data-product="ASUS ROG Strix"><i class="fas fa-edit"></i></button>
+                                            <button class="btn-icon btn-sell" data-product="ASUS ROG Strix" data-product-id="2">
+                                                <i class="fas fa-bolt"></i>
+                                            </button>
+                                            <button class="btn-icon btn-edit disabled" title="Нельзя редактировать чужие товары" data-product="ASUS ROG Strix" data-product-id="2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete disabled" title="Нельзя удалять чужие товары" data-product="ASUS ROG Strix" data-product-id="2">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr data-product-id="3" data-owner="user123">
                                     <td>
                                         <div class="product-info">
                                             <div class="product-icon">🎧</div>
                                             <div>
                                                 <div class="product-name">Наушники Sony WH-1000XM5</div>
                                                 <div class="product-sku">SKU: SON-WH1000XM5</div>
+                                                <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                                                    <i class="fas fa-user"></i> Ваш товар
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -170,8 +240,15 @@
                                     <td><span class="status status-out">Нет в наличии</span></td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button class="btn-icon btn-order" data-product="Sony WH-1000XM5"><i class="fas fa-shopping-cart"></i></button>
-                                            <button class="btn-icon btn-edit" data-product="Sony WH-1000XM5"><i class="fas fa-edit"></i></button>
+                                            <button class="btn-icon btn-order" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-shopping-cart"></i>
+                                            </button>
+                                            <button class="btn-icon btn-edit" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete" data-product="Sony WH-1000XM5" data-product-id="3">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -274,6 +351,7 @@
                             <div class="action-title">Быстрая продажа</div>
                             <div class="action-desc">Продать товар за 30 секунд</div>
                         </div>
+                        <div class="action-badge">🔥</div>
                     </a>
                     <a href="./sales/pro/" class="quick-action-btn pro-sale" data-action="pro-sale">
                         <div class="action-icon">📋</div>
@@ -281,38 +359,47 @@
                             <div class="action-title">Профессиональная продажа</div>
                             <div class="action-desc">Подробная работа с клиентом</div>
                         </div>
+                        <div class="action-badge">👑</div>
                     </a>
-                    <a href="./reports/" class="quick-action-btn create-report" data-action="create-report">
+                    <button class="quick-action-btn create-report" data-action="create-report" onclick="generateReport()">
                         <div class="action-icon">📊</div>
                         <div>
                             <div class="action-title">Создать отчёт</div>
                             <div class="action-desc">Генерация отчёта за период</div>
                         </div>
-                    </a>
-                    <a href="./export/" class="quick-action-btn export-data" data-action="export-data">
+                        <div class="action-badge">📈</div>
+                    </button>
+                    <button class="quick-action-btn export-data" data-action="export-data" onclick="openExportModal()">
                         <div class="action-icon">📤</div>
                         <div>
                             <div class="action-title">Экспорт данных</div>
                             <div class="action-desc">Выгрузить в Excel/CSV</div>
                         </div>
-                    </a>
+                        <div class="action-badge">💾</div>
+                    </button>
                 </div>
             </div>
 
             <!-- Уведомления -->
-            <div class="card">
+            <div class="card notifications-card">
                 <div class="card-header">
                     <h3><i class="fas fa-bell"></i> Уведомления</h3>
-                    <span class="badge notification-count">3</span>
+                    <div class="notifications-header-actions">
+                        <span class="badge notification-count">3</span>
+                        <button class="btn-icon btn-clear-all" title="Очистить все уведомления">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="notifications">
                     <div class="notification new" data-id="1">
                         <div class="notification-icon">✅</div>
                         <div class="notification-content">
                             <div class="notification-title">Заказ #4892 выполнен</div>
+                            <div class="notification-desc">Смартфон iPhone 15 Pro продан</div>
                             <div class="notification-time" data-time="2024-12-25T14:30:00">6 минут назад</div>
                         </div>
-                        <button class="notification-close"><i class="fas fa-times"></i></button>
+                        <button class="notification-close" data-id="1"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="notification new" data-id="2">
                         <div class="notification-icon">⚠️</div>
@@ -320,8 +407,9 @@
                             <div class="notification-title">Заканчивается товар</div>
                             <div class="notification-desc">Ноутбук ASUS ROG Strix</div>
                             <div class="notification-stock">Осталось 3 шт.</div>
+                            <div class="notification-time" data-time="2024-12-25T13:15:00">1 час назад</div>
                         </div>
-                        <button class="notification-close"><i class="fas fa-times"></i></button>
+                        <button class="notification-close" data-id="2"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="notification" data-id="3">
                         <div class="notification-icon">📦</div>
@@ -330,11 +418,22 @@
                             <div class="notification-desc">15 новых товаров на склад</div>
                             <div class="notification-time" data-time="2024-12-25T12:00:00">2 часа назад</div>
                         </div>
-                        <button class="notification-close"><i class="fas fa-times"></i></button>
+                        <button class="notification-close" data-id="3"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="notification" data-id="4">
+                        <div class="notification-icon">🎄</div>
+                        <div class="notification-content">
+                            <div class="notification-title">Новогодняя акция</div>
+                            <div class="notification-desc">Скидка 15% на праздничные товары</div>
+                            <div class="notification-time" data-time="2024-12-24T10:00:00">1 день назад</div>
+                        </div>
+                        <button class="notification-close" data-id="4"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 <div class="notification-controls">
-                    <button class="btn btn-small btn-secondary mark-all-read">Отметить все как прочитанные</button>
+                    <button class="btn btn-small btn-secondary mark-all-read">
+                        <i class="fas fa-check-double"></i> Отметить все как прочитанные
+                    </button>
                 </div>
             </div>
 
@@ -371,6 +470,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="warehouse-time" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glass-border);">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--gray); font-size: 0.8rem;">
+                        <i class="fas fa-clock"></i>
+                        <span>Обновлено: <span class="update-time">сегодня 15:30</span></span>
+                    </div>
+                </div>
             </div>
 
             <!-- Популярные категории -->
@@ -402,6 +507,12 @@
                         <div class="category-rank">3</div>
                     </div>
                 </div>
+                <div class="categories-time" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glass-border);">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--gray); font-size: 0.8rem;">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Актуально на: <span class="categories-update">декабрь 2024</span></span>
+                    </div>
+                </div>
             </div>
         </aside>
     </div>
@@ -415,6 +526,121 @@
         </div>
     </div>
 </footer>
+
+<!-- Модальное окно для экспорта -->
+<div id="exportModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-download"></i> Экспорт данных</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="color: var(--gray); margin-bottom: 1.5rem;">Выберите данные для экспорта:</p>
+
+            <div class="export-options">
+                <div class="export-option">
+                    <input type="radio" id="exportDashboard" name="exportType" value="dashboard" checked>
+                    <label for="exportDashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>
+                            <div class="export-title">Дашборд</div>
+                            <div class="export-desc">Ключевые метрики и статистика</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="export-option">
+                    <input type="radio" id="exportProducts" name="exportType" value="products">
+                    <label for="exportProducts">
+                        <i class="fas fa-boxes"></i>
+                        <div>
+                            <div class="export-title">Каталог товаров</div>
+                            <div class="export-desc">Все товары с ценами и остатками</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="export-option">
+                    <input type="radio" id="exportSales" name="exportType" value="sales">
+                    <label for="exportSales">
+                        <i class="fas fa-shopping-cart"></i>
+                        <div>
+                            <div class="export-title">История продаж</div>
+                            <div class="export-desc">Все транзакции за период</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="export-period" style="margin-top: 1.5rem;">
+                <label style="display: block; margin-bottom: 8px; color: var(--light); font-weight: 600;">
+                    <i class="fas fa-calendar"></i> Период экспорта
+                </label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="date" class="form-control" id="exportDateFrom" value="2024-12-01">
+                    <input type="date" class="form-control" id="exportDateTo" value="2024-12-25">
+                </div>
+            </div>
+
+            <div class="export-actions" style="display: flex; gap: 15px; margin-top: 2rem;">
+                <button class="btn btn-secondary modal-close" style="flex: 1;">Отмена</button>
+                <button class="btn btn-success" onclick="exportSelectedData()" style="flex: 2;">
+                    <i class="fas fa-download"></i> Экспортировать
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно редактирования товара -->
+<div id="editProductModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-edit"></i> Редактирование товара</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="edit-product-form">
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Название товара</label>
+                    <input type="text" id="editProductName" class="form-control" value="Смартфон iPhone 15 Pro">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-box"></i> Остаток</label>
+                        <input type="number" id="editProductStock" class="form-control" min="0" value="42">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-dollar-sign"></i> Цена</label>
+                        <input type="number" id="editProductPrice" class="form-control" min="0" value="89990">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-tags"></i> Категория</label>
+                    <select id="editProductCategory" class="form-control">
+                        <option value="Электроника">Электроника</option>
+                        <option value="Аудио">Аудио</option>
+                        <option value="Праздник">Праздник</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-info-circle"></i> Описание</label>
+                    <textarea id="editProductDescription" class="form-control" rows="3">Флагманский смартфон Apple</textarea>
+                </div>
+
+                <div class="edit-actions" style="display: flex; gap: 15px; margin-top: 2rem;">
+                    <button class="btn btn-secondary modal-close" style="flex: 1;">Отмена</button>
+                    <button class="btn btn-primary" onclick="saveProductChanges()" style="flex: 2;">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- JS -->
 <script src="../static/js/main.js"></script>

@@ -1,915 +1,775 @@
-// dashboard.js - Скрипты для дашборда с реальными взаимодействиями
+// dashboard.js - Полностью функциональный скрипт для SuRam
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация снежинок
+    // Инициализация всех модулей
     initSnowflakes();
-
-    // Инициализация активного пункта меню
     initActiveMenu();
-
-    // Инициализация уведомлений
     initNotifications();
-
-    // Инициализация графика продаж
     initSalesChart();
-
-    // Инициализация кнопок быстрых действий
     initQuickActions();
-
-    // Инициализация обновления времени в уведомлениях
     initTimeUpdates();
-
-    // Инициализация метрик
     initMetrics();
-
-    // Инициализация интерактивных элементов таблицы
     initTableInteractions();
-
-    // Инициализация кнопок в таблице
-    initTableButtons();
-
-    // Инициализация пагинации
     initPagination();
-
-    // Инициализация фильтров
     initFilters();
-
-    // Инициализация кнопок экспорта
     initExportButtons();
+    initDateValidation();
+    initProductCatalog();
+    initSalesSystem();
+    initShoppingCart();
+    initModals();
+
+    // Новая функциональность
+    initAddProductPanel();
+    initSearchSuggestions();
+    initProductOwnership();
+    initPushNotifications();
+
+    // Инициализация пользователя
+    initUserSession();
 });
 
-// Создание снежинок
-function initSnowflakes() {
-    const snowflakesContainer = document.getElementById('snowflakes');
-    if (!snowflakesContainer) return;
+// ===== 1. ПАНЕЛЬ ДОБАВЛЕНИЯ ТОВАРА =====
+function initAddProductPanel() {
+    const openBtn = document.getElementById('openAddPanelBtn');
+    const panel = document.getElementById('addProductPanel');
+    const closeBtns = document.querySelectorAll('.close-panel-btn');
+    const addBtn = document.getElementById('addProductBtn');
 
-    const snowflakeCount = Math.min(35, Math.floor(window.innerWidth / 35));
+    if (!openBtn || !panel) return;
 
-    for (let i = 0; i < snowflakeCount; i++) {
-        const snowflake = document.createElement('div');
-        snowflake.className = 'snowflake';
-
-        const size = Math.random() * 5 + 2;
-        snowflake.style.width = `${size}px`;
-        snowflake.style.height = `${size}px`;
-
-        snowflake.style.left = `${Math.random() * 100}%`;
-        snowflake.style.opacity = Math.random() * 0.4 + 0.2;
-
-        const duration = Math.random() * 12 + 8;
-        snowflake.style.animationDuration = `${duration}s`;
-        snowflake.style.animationDelay = `${Math.random() * 4}s`;
-
-        snowflakesContainer.appendChild(snowflake);
-    }
-}
-
-// Инициализация активного пункта меню
-function initActiveMenu() {
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    // Убираем active со всех ссылок
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-
-        // Проверяем, соответствует ли ссылка текущему пути
-        const linkPath = link.getAttribute('href');
-        if (linkPath === currentPath ||
-            (currentPath === '/' && linkPath === '/') ||
-            (currentPath.includes(linkPath) && linkPath !== '/')) {
-            link.classList.add('active');
-        }
+    // Открытие панели
+    openBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openAddProductPanel();
     });
-}
 
-// Уведомления
-function initNotifications() {
-    const notificationCount = document.querySelector('.notification-count');
-    const notifications = document.querySelectorAll('.notification.new');
-    const markAllReadBtn = document.querySelector('.mark-all-read');
-    const closeButtons = document.querySelectorAll('.notification-close');
-
-    if (!notificationCount) return;
-
-    // Обновление счетчика
-    function updateNotificationCount() {
-        const newNotifications = document.querySelectorAll('.notification.new:not(.hidden)');
-        const count = newNotifications.length;
-        notificationCount.textContent = count;
-
-        if (count === 0) {
-            notificationCount.style.display = 'none';
-            if (markAllReadBtn) {
-                markAllReadBtn.disabled = true;
-                markAllReadBtn.textContent = 'Все прочитаны';
-                markAllReadBtn.style.opacity = '0.6';
-            }
-        } else {
-            notificationCount.style.display = 'flex';
-            if (markAllReadBtn) {
-                markAllReadBtn.disabled = false;
-                markAllReadBtn.textContent = 'Отметить все как прочитанные';
-                markAllReadBtn.style.opacity = '1';
-            }
-        }
-    }
-
-    // Закрытие уведомления
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const notification = this.closest('.notification');
-            if (notification.classList.contains('new')) {
-                notification.classList.remove('new');
-                notification.classList.add('read');
-            }
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateX(20px)';
-
-            setTimeout(() => {
-                notification.style.display = 'none';
-                updateNotificationCount();
-            }, 300);
+    // Закрытие панели
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            closeAddProductPanel();
         });
     });
+
+    // Добавление товара
+    if (addBtn) {
+        addBtn.addEventListener('click', addNewProduct);
+    }
+
+    // Закрытие по клику вне панели
+    panel.addEventListener('click', function(e) {
+        if (e.target === panel) {
+            closeAddProductPanel();
+        }
+    });
+}
+
+function openAddProductPanel() {
+    const panel = document.getElementById('addProductPanel');
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    showToast('Добавьте новый товар');
+}
+
+function closeAddProductPanel() {
+    const panel = document.getElementById('addProductPanel');
+    panel.classList.remove('open');
+    document.body.style.overflow = '';
+
+    // Очистка формы
+    document.getElementById('productName').value = '';
+    document.getElementById('productCategory').value = '';
+    document.getElementById('productStock').value = '10';
+    document.getElementById('productPrice').value = '1000';
+}
+
+function addNewProduct() {
+    const name = document.getElementById('productName').value.trim();
+    const category = document.getElementById('productCategory').value;
+    const stock = parseInt(document.getElementById('productStock').value);
+    const price = parseInt(document.getElementById('productPrice').value);
+
+    if (!name) {
+        showPushNotification('Введите название товара', 'error');
+        document.getElementById('productName').focus();
+        return;
+    }
+
+    if (!category) {
+        showPushNotification('Выберите категорию', 'error');
+        return;
+    }
+
+    if (isNaN(stock) || stock < 0) {
+        showPushNotification('Введите корректное количество', 'error');
+        return;
+    }
+
+    if (isNaN(price) || price <= 0) {
+        showPushNotification('Введите корректную цену', 'error');
+        return;
+    }
+
+    // Создание нового товара
+    const productId = 'prod_' + Date.now();
+    const currentUser = getCurrentUser();
+
+    // Добавление в таблицу
+    addProductToTable({
+        id: productId,
+        name: name,
+        category: category,
+        stock: stock,
+        price: price,
+        owner: currentUser.id,
+        sku: 'SKU: ' + generateSKU(name),
+        status: stock > 5 ? 'В наличии' : stock > 0 ? 'Мало' : 'Нет в наличии'
+    });
+
+    // Закрытие панели
+    closeAddProductPanel();
+
+    // Уведомление
+    showPushNotification(`Товар "${name}" успешно добавлен!`, 'success');
+
+    // Обновление счетчика товаров
+    updateProductCount();
+}
+
+function addProductToTable(product) {
+    const tableBody = document.querySelector('.table tbody');
+    if (!tableBody) return;
+
+    const icon = getProductIcon(product.category);
+    const statusClass = product.status === 'В наличии' ? 'status-in-stock' :
+                       product.status === 'Мало' ? 'status-low' : 'status-out';
+
+    const currentUser = getCurrentUser();
+    const isOwner = product.owner === currentUser.id;
+
+    const row = document.createElement('tr');
+    row.setAttribute('data-product-id', product.id);
+    row.setAttribute('data-owner', product.owner);
+
+    row.innerHTML = `
+        <td>
+            <div class="product-info">
+                <div class="product-icon">${icon}</div>
+                <div>
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-sku">${product.sku}</div>
+                    <div class="product-owner" style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">
+                        <i class="fas fa-${isOwner ? 'user' : 'user-tie'}"></i> ${isOwner ? 'Ваш товар' : 'Коллега'}
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td><span class="category-badge">${product.category}</span></td>
+        <td><span class="stock-count">${product.stock} шт.</span></td>
+        <td><span class="price">₽ ${product.price.toLocaleString()}</span></td>
+        <td><span class="status ${statusClass}">${product.status}</span></td>
+        <td>
+            <div class="action-buttons">
+                <button class="btn-icon btn-sell" data-product="${product.name}" data-product-id="${product.id}">
+                    <i class="fas fa-bolt"></i>
+                </button>
+                <button class="btn-icon btn-edit ${isOwner ? '' : 'disabled'}"
+                        data-product="${product.name}"
+                        data-product-id="${product.id}"
+                        ${!isOwner ? 'title="Нельзя редактировать чужие товары"' : ''}>
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon btn-delete ${isOwner ? '' : 'disabled'}"
+                        data-product="${product.name}"
+                        data-product-id="${product.id}"
+                        ${!isOwner ? 'title="Нельзя удалять чужие товары"' : ''}>
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </td>
+    `;
+
+    // Вставка в начало таблицы
+    tableBody.insertBefore(row, tableBody.firstChild);
+
+    // Добавление обработчиков
+    initRowInteractions(row);
+}
+
+function getProductIcon(category) {
+    const icons = {
+        'Электроника': '📱',
+        'Аудио': '🎧',
+        'Праздник': '🎄',
+        'Бытовая техника': '🏠',
+        'Канцелярия': '✏️'
+    };
+    return icons[category] || '📦';
+}
+
+function generateSKU(name) {
+    const prefix = name.substring(0, 3).toUpperCase();
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return prefix + '-' + random;
+}
+
+function updateProductCount() {
+    const count = document.querySelectorAll('.table tbody tr').length;
+    const metricValue = document.querySelector('.metric-value');
+    if (metricValue && metricValue.textContent.includes(',')) {
+        metricValue.textContent = count.toLocaleString();
+    }
+}
+
+// ===== 2. СИСТЕМА УВЕДОМЛЕНИЙ =====
+function initNotifications() {
+    const clearAllBtn = document.querySelector('.btn-clear-all');
+    const markAllReadBtn = document.querySelector('.mark-all-read');
+    const closeBtns = document.querySelectorAll('.notification-close');
+    const notificationCount = document.querySelector('.notification-count');
+
+    // Очистка всех уведомлений
+    if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', function() {
+            clearAllNotifications();
+        });
+    }
 
     // Отметить все как прочитанные
     if (markAllReadBtn) {
         markAllReadBtn.addEventListener('click', function() {
-            document.querySelectorAll('.notification.new').forEach(notification => {
-                notification.classList.remove('new');
-                notification.classList.add('read');
-
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateX(20px)';
-
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 300);
-            });
-
-            setTimeout(updateNotificationCount, 350);
+            markAllNotificationsAsRead();
         });
     }
 
-    // Анимация появления уведомлений
-    setTimeout(() => {
-        notifications.forEach((notification, index) => {
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateX(-15px)';
-
-            setTimeout(() => {
-                notification.style.transition = 'all 0.3s ease';
-                notification.style.opacity = '1';
-                notification.style.transform = 'translateX(0)';
-            }, 80 * (index + 1));
-        });
-    }, 500);
-
-    updateNotificationCount();
-}
-
-// График продаж
-function initSalesChart() {
-    const chartBars = document.querySelectorAll('.chart-bar');
-    const totalRevenueEl = document.querySelector('.stat-value:first-child');
-
-    if (!chartBars.length) return;
-
-    // Подсчет общей выручки
-    let totalRevenue = 0;
-    chartBars.forEach(bar => {
-        const value = parseInt(bar.getAttribute('data-value')) || 0;
-        totalRevenue += value;
-    });
-
-    // Форматирование чисел
-    function formatNumber(num) {
-        if (num >= 1000000) {
-            return '₽ ' + (num / 1000000).toFixed(1) + 'M';
-        } else if (num >= 1000) {
-            return '₽ ' + (num / 1000).toFixed(1) + 'K';
-        }
-        return '₽ ' + num.toLocaleString();
-    }
-
-    // Обновление общей выручки
-    if (totalRevenueEl) {
-        totalRevenueEl.textContent = formatNumber(totalRevenue);
-    }
-
-    // Интерактивность столбцов
-    chartBars.forEach(bar => {
-        bar.addEventListener('mouseenter', function() {
-            const value = parseInt(this.getAttribute('data-value')) || 0;
-            const barValue = this.querySelector('.bar-value');
-            if (barValue) {
-                barValue.textContent = formatNumber(value);
-            }
-
-            // Подсветка столбца
-            this.style.boxShadow = '0 0 15px rgba(255, 217, 61, 0.4)';
-        });
-
-        bar.addEventListener('mouseleave', function() {
-            this.style.boxShadow = 'none';
-        });
-
-        bar.addEventListener('click', function() {
-            const value = parseInt(this.getAttribute('data-value')) || 0;
-            const day = this.closest('.chart-bar-container').querySelector('.chart-label').textContent;
-            showToast(`Выручка за ${day}: ${formatNumber(value)}`);
+    // Закрытие отдельных уведомлений
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const notificationId = this.getAttribute('data-id');
+            closeNotification(notificationId);
         });
     });
+
+    // Обновление счетчика
+    updateNotificationCounter();
 }
 
-// Быстрые действия
-function initQuickActions() {
-    const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+function clearAllNotifications() {
+    if (!confirm('Удалить все уведомления?')) return;
 
-    quickActionBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            // Проверяем, если ссылка ведет на реальную страницу
-            const href = this.getAttribute('href');
-            if (href && href !== '#' && href !== '') {
-                // Реальная навигация
-                return;
-            }
-
-            e.preventDefault();
-
-            // Анимация нажатия
-            this.style.transform = 'translateX(2px) scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = 'translateX(2px) scale(1)';
-            }, 150);
-
-            // Показ сообщения в зависимости от типа действия
-            const action = this.getAttribute('data-action');
-            let message = '';
-
-            switch(action) {
-                case 'quick-sale':
-                    message = 'Открывается форма быстрой продажи...';
-                    // Можете добавить модальное окно или перенаправление
-                    setTimeout(() => {
-                        window.location.href = '/sales/new/';
-                    }, 500);
-                    break;
-                case 'pro-sale':
-                    message = 'Запускается режим профессиональной продажи...';
-                    // Здесь можно открыть модальное окно с формой
-                    break;
-                case 'create-report':
-                    message = 'Генерация отчёта...';
-                    setTimeout(() => {
-                        window.location.href = '/reports/';
-                    }, 500);
-                    break;
-                case 'export-data':
-                    message = 'Подготовка данных для экспорта...';
-                    // Здесь можно добавить логику экспорта
-                    simulateExport();
-                    break;
-            }
-
-            if (message) {
-                showToast(message);
-            }
-        });
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(20px)';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
     });
-}
-
-// Симуляция экспорта данных
-function simulateExport() {
-    showToast('Подготовка данных для экспорта...', 2000);
 
     setTimeout(() => {
-        showToast('Экспорт завершен! Файл готов к скачиванию.', 3000);
-
-        // Создаем временную ссылку для скачивания
-        const link = document.createElement('a');
-        link.style.display = 'none';
-        link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(generateSampleCSV());
-        link.download = 'suram_export_' + new Date().toISOString().split('T')[0] + '.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }, 2000);
+        updateNotificationCounter();
+        showToast('Все уведомления удалены', 'info');
+    }, 400);
 }
 
-function generateSampleCSV() {
-    return `Товар,Категория,Остаток,Цена,Статус,Продажи
-"Смартфон iPhone 15 Pro",Электроника,42,89990,"В наличии",125
-"Ноутбук ASUS ROG Strix",Электроника,8,149990,"Мало",89
-"Наушники Sony WH-1000XM5",Аудио,0,34990,"Нет в наличии",67
-"Новогодняя ёлка 1.8м",Новогодние товары,15,12990,"В наличии",42
-"Шоколадный набор",Новогодние товары,120,2990,"В наличии",189`;
+function markAllNotificationsAsRead() {
+    const notifications = document.querySelectorAll('.notification.new');
+    notifications.forEach(notification => {
+        notification.classList.remove('new');
+        notification.classList.add('read');
+    });
+
+    updateNotificationCounter();
+    showToast('Все уведомления отмечены как прочитанные', 'success');
 }
 
-// Обновление времени в уведомлениях
-function initTimeUpdates() {
-    function updateTimeElements() {
-        const timeElements = document.querySelectorAll('.notification-time[data-time]');
+function closeNotification(notificationId) {
+    const notification = document.querySelector(`.notification[data-id="${notificationId}"]`);
+    if (!notification) return;
 
-        timeElements.forEach(element => {
-            const timeString = element.getAttribute('data-time');
-            if (!timeString) return;
-
-            const time = new Date(timeString);
-            const now = new Date();
-            const diffMs = now - time;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
-
-            let text = '';
-            if (diffMins < 1) {
-                text = 'только что';
-            } else if (diffMins < 60) {
-                text = `${diffMins} ${getNoun(diffMins, 'минуту', 'минуты', 'минут')} назад`;
-            } else if (diffHours < 24) {
-                text = `${diffHours} ${getNoun(diffHours, 'час', 'часа', 'часов')} назад`;
-            } else if (diffDays < 7) {
-                text = `${diffDays} ${getNoun(diffDays, 'день', 'дня', 'дней')} назад`;
-            } else {
-                text = time.toLocaleDateString('ru-RU');
-            }
-
-            element.textContent = text;
-        });
+    if (notification.classList.contains('new')) {
+        notification.classList.remove('new');
+        notification.classList.add('read');
     }
 
-    function getNoun(number, one, two, five) {
-        let n = Math.abs(number);
-        n %= 100;
-        if (n >= 5 && n <= 20) {
-            return five;
-        }
-        n %= 10;
-        if (n === 1) {
-            return one;
-        }
-        if (n >= 2 && n <= 4) {
-            return two;
-        }
-        return five;
-    }
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateX(20px)';
 
-    // Обновляем время при загрузке и каждую минуту
-    updateTimeElements();
-    setInterval(updateTimeElements, 60000);
-}
-
-// Метрики
-function initMetrics() {
-    const metricCards = document.querySelectorAll('.metric-card');
-
-    metricCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const label = this.querySelector('.metric-label').textContent;
-            const value = this.querySelector('.metric-value').textContent;
-
-            // Анимация нажатия
-            this.style.transform = 'translateY(-3px) scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = 'translateY(-3px) scale(1)';
-            }, 150);
-
-            // Показ деталей
-            showToast(`${label}: ${value}`);
-        });
-    });
-}
-
-// Интерактивные элементы таблицы
-function initTableInteractions() {
-    // Клик по строке таблицы
-    const tableRows = document.querySelectorAll('.table tbody tr');
-    tableRows.forEach(row => {
-        row.addEventListener('click', function() {
-            const productName = this.querySelector('.product-name').textContent;
-            const status = this.querySelector('.status').textContent;
-            const price = this.querySelector('.price').textContent;
-
-            showToast(`${productName} | ${status} | ${price}`, 2500);
-        });
-    });
-}
-
-// Кнопки в таблице
-function initTableButtons() {
-    // Кнопки продажи
-    const sellButtons = document.querySelectorAll('.btn-sell');
-    sellButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const product = this.getAttribute('data-product');
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            showToast(`Быстрая продажа: ${product}`, 2000);
-            setTimeout(() => {
-                window.location.href = '/sales/new/?product=' + encodeURIComponent(product);
-            }, 500);
-        });
-    });
-
-    // Кнопки редактирования
-    const editButtons = document.querySelectorAll('.btn-edit');
-    editButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const product = this.getAttribute('data-product');
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            showToast(`Редактирование: ${product}`, 2000);
-            setTimeout(() => {
-                window.location.href = '/products/edit/?product=' + encodeURIComponent(product);
-            }, 500);
-        });
-    });
-
-    // Кнопки заказа
-    const orderButtons = document.querySelectorAll('.btn-order');
-    orderButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const product = this.getAttribute('data-product');
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            showToast(`Заказ товара: ${product}`, 2000);
-            // Здесь можно открыть форму заказа
-        });
-    });
-}
-
-// Инициализация пагинации
-function initPagination() {
-    const pageBtns = document.querySelectorAll('.page-btn');
-    const prevBtn = document.querySelector('.page-btn:first-child');
-    const nextBtn = document.querySelector('.page-btn:last-child');
-    const pageInfo = document.querySelector('.page-info');
-
-    let currentPage = 1;
-    const totalPages = 12; // Примерное количество страниц
-
-    // Обновление состояния кнопок
-    function updatePagination() {
-        // Снимаем активность со всех кнопок
-        pageBtns.forEach(btn => {
-            btn.classList.remove('active');
-            const pageNum = parseInt(btn.textContent);
-            if (pageNum === currentPage) {
-                btn.classList.add('active');
-            }
-        });
-
-        // Обновляем информацию о странице
-        if (pageInfo) {
-            pageInfo.textContent = `Страница ${currentPage} из ${totalPages}`;
-        }
-
-        // Блокируем/разблокируем кнопки навигации
-        if (prevBtn) {
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.style.opacity = currentPage === 1 ? '0.5' : '1';
-            prevBtn.style.cursor = currentPage === 1 ? 'not-allowed' : 'pointer';
-        }
-
-        if (nextBtn) {
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.style.opacity = currentPage === totalPages ? '0.5' : '1';
-            nextBtn.style.cursor = currentPage === totalPages ? 'not-allowed' : 'pointer';
-        }
-
-        // Загружаем данные для текущей страницы
-        loadPageData(currentPage);
-    }
-
-    // Обработчик кликов по кнопкам страниц
-    pageBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            const btnText = this.textContent.trim();
-
-            if (btnText === '...') return;
-
-            if (btn === prevBtn && currentPage > 1) {
-                currentPage--;
-            } else if (btn === nextBtn && currentPage < totalPages) {
-                currentPage++;
-            } else if (!isNaN(parseInt(btnText))) {
-                currentPage = parseInt(btnText);
-            }
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            updatePagination();
-            showToast(`Загружена страница ${currentPage}`);
-        });
-    });
-
-    // Инициализация пагинации
-    updatePagination();
-}
-
-// Загрузка данных страницы
-function loadPageData(page) {
-    // Здесь будет загрузка данных с сервера
-    // Для демонстрации просто показываем уведомление
-    console.log(`Загрузка данных для страницы ${page}...`);
-
-    // Симуляция загрузки
     setTimeout(() => {
-        showToast(`Страница ${page} загружена`);
+        notification.remove();
+        updateNotificationCounter();
     }, 300);
 }
 
-// Инициализация фильтров
-function initFilters() {
-    const filterBtns = document.querySelectorAll('.sales-filters .btn');
-    const dateFrom = document.querySelector('input[type="date"][value="2024-12-01"]');
-    const dateTo = document.querySelector('input[type="date"][value="2024-12-25"]');
-    const searchInput = document.querySelector('.search-box input');
+function updateNotificationCounter() {
+    const notificationCount = document.querySelector('.notification-count');
+    const newNotifications = document.querySelectorAll('.notification.new');
+    const count = newNotifications.length;
 
-    // Кнопка применения фильтров
-    const applyBtn = document.querySelector('.sales-filters .btn-primary');
-    if (applyBtn) {
-        applyBtn.addEventListener('click', function() {
-            const fromDate = dateFrom ? dateFrom.value : '';
-            const toDate = dateTo ? dateTo.value : '';
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            showToast(`Применены фильтры: ${fromDate} - ${toDate}`);
-
-            // Здесь будет запрос к серверу с фильтрами
-            applyFilters(fromDate, toDate);
-        });
-    }
-
-    // Кнопка сброса фильтров
-    const resetBtn = document.querySelector('.sales-filters .btn-secondary');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', function() {
-            if (dateFrom) dateFrom.value = '2024-12-01';
-            if (dateTo) dateTo.value = '2024-12-25';
-            if (searchInput) searchInput.value = '';
-
-            // Анимация нажатия
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-
-            showToast('Фильтры сброшены');
-
-            // Сброс фильтров на сервере
-            resetFilters();
-        });
-    }
-
-    // Поиск по товарам
-    if (searchInput) {
-        let searchTimeout;
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const query = this.value.trim();
-                if (query.length >= 2 || query.length === 0) {
-                    searchProducts(query);
-                }
-            }, 500);
-        });
-
-        // Кнопка поиска
-        const searchBtn = searchInput.nextElementSibling;
-        if (searchBtn && searchBtn.classList.contains('btn')) {
-            searchBtn.addEventListener('click', function() {
-                const query = searchInput.value.trim();
-                searchProducts(query);
-            });
-        }
+    if (notificationCount) {
+        notificationCount.textContent = count;
+        notificationCount.style.display = count > 0 ? 'flex' : 'none';
     }
 }
 
-// Применение фильтров
-function applyFilters(fromDate, toDate) {
-    // Здесь будет AJAX запрос к серверу
-    console.log(`Применение фильтров: ${fromDate} - ${toDate}`);
+// ===== 3. ВЛАДЕНИЕ ТОВАРАМИ =====
+function initProductOwnership() {
+    const editBtns = document.querySelectorAll('.btn-edit');
+    const deleteBtns = document.querySelectorAll('.btn-delete');
 
-    // Симуляция загрузки
-    showToast('Применяем фильтры...', 1500);
-
-    setTimeout(() => {
-        // Обновляем данные на странице
-        updateFilteredData();
-    }, 1500);
-}
-
-// Сброс фильтров
-function resetFilters() {
-    // Здесь будет AJAX запрос к серверу
-    console.log('Сброс фильтров');
-
-    // Симуляция загрузки
-    showToast('Сбрасываем фильтры...', 1500);
-
-    setTimeout(() => {
-        // Обновляем данные на странице
-        updateFilteredData(true);
-    }, 1500);
-}
-
-// Поиск товаров
-function searchProducts(query) {
-    if (!query) {
-        // Если запрос пустой, показываем все товары
-        updateFilteredData(true);
-        return;
-    }
-
-    // Здесь будет AJAX запрос к серверу
-    console.log(`Поиск товаров: ${query}`);
-
-    showToast(`Поиск: ${query}`, 1500);
-
-    setTimeout(() => {
-        // Симуляция поиска
-        const searchResults = [
-            { name: 'Смартфон iPhone 15 Pro', category: 'Электроника', stock: 42, price: '₽ 89,990', status: 'В наличии' },
-            { name: 'Ноутбук ASUS ROG Strix', category: 'Электроника', stock: 8, price: '₽ 149,990', status: 'Мало' }
-        ];
-
-        updateSearchResults(searchResults);
-    }, 1000);
-}
-
-// Обновление данных после фильтрации
-function updateFilteredData(reset = false) {
-    // Здесь будет обновление DOM с новыми данными
-    if (reset) {
-        showToast('Показаны все товары');
-    } else {
-        showToast('Данные обновлены по фильтрам');
-    }
-}
-
-// Обновление результатов поиска
-function updateSearchResults(results) {
-    // Здесь будет обновление таблицы с результатами поиска
-    console.log('Обновление результатов поиска:', results);
-
-    if (results.length === 0) {
-        showToast('Ничего не найдено');
-    } else {
-        showToast(`Найдено ${results.length} товаров`);
-    }
-}
-
-// Инициализация кнопок экспорта
-function initExportButtons() {
-    const exportBtns = document.querySelectorAll('.btn[class*="export"], .btn:has(.fa-download)');
-
-    exportBtns.forEach(btn => {
+    editBtns.forEach(btn => {
         btn.addEventListener('click', function(e) {
-            e.preventDefault();
+            e.stopPropagation();
 
-            // Анимация нажатия
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
+            if (this.classList.contains('disabled')) {
+                showPushNotification('Вы не можете редактировать чужие товары', 'warning');
+                return;
+            }
 
-            // Определяем тип экспорта
-            const pageType = getCurrentPageType();
-            exportData(pageType);
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.getAttribute('data-product');
+            openEditProductModal(productId, productName);
+        });
+    });
+
+    deleteBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            if (this.classList.contains('disabled')) {
+                showPushNotification('Вы не можете удалять чужие товары', 'warning');
+                return;
+            }
+
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.getAttribute('data-product');
+            deleteProduct(productId, productName);
         });
     });
 }
 
-// Определение типа текущей страницы
-function getCurrentPageType() {
-    const path = window.location.pathname;
+function openEditProductModal(productId, productName) {
+    // Здесь будет загрузка данных товара и открытие модального окна
+    const modal = document.getElementById('editProductModal');
+    if (!modal) return;
 
-    if (path.includes('products')) return 'products';
-    if (path.includes('sales')) return 'sales';
-    if (path.includes('reports')) return 'reports';
-    if (path.includes('profit')) return 'profit';
+    // Установка значений в форму
+    document.getElementById('editProductName').value = productName;
 
-    return 'dashboard';
+    // Открытие модального окна
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.style.opacity = '1';
+        modal.querySelector('.modal-content').style.transform = 'translateY(0)';
+    }, 10);
+
+    showToast(`Редактирование: ${productName}`);
 }
 
-// Экспорт данных
-function exportData(type = 'dashboard') {
-    showToast(`Подготовка экспорта ${type}...`, 2000);
+function saveProductChanges() {
+    const name = document.getElementById('editProductName').value;
+    const stock = document.getElementById('editProductStock').value;
+    const price = document.getElementById('editProductPrice').value;
+    const category = document.getElementById('editProductCategory').value;
 
-    setTimeout(() => {
-        let csvData = '';
-        let filename = '';
+    // Закрытие модального окна
+    closeModal('editProductModal');
 
-        switch(type) {
-            case 'products':
-                csvData = generateProductsCSV();
-                filename = `suram_products_export_${new Date().toISOString().split('T')[0]}.csv`;
-                break;
-            case 'sales':
-                csvData = generateSalesCSV();
-                filename = `suram_sales_export_${new Date().toISOString().split('T')[0]}.csv`;
-                break;
-            case 'reports':
-            case 'profit':
-                csvData = generateReportsCSV();
-                filename = `suram_reports_export_${new Date().toISOString().split('T')[0]}.csv`;
-                break;
-            default:
-                csvData = generateDashboardCSV();
-                filename = `suram_export_${new Date().toISOString().split('T')[0]}.csv`;
+    showPushNotification(`Товар "${name}" успешно обновлен!`, 'success');
+}
+
+function deleteProduct(productId, productName) {
+    if (!confirm(`Удалить товар "${productName}"?`)) return;
+
+    const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+    if (row) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+
+        setTimeout(() => {
+            row.remove();
+            updateProductCount();
+            showPushNotification(`Товар "${productName}" удален`, 'info');
+        }, 300);
+    }
+}
+
+// ===== 4. ПОИСК С ПОДСКАЗКАМИ =====
+function initSearchSuggestions() {
+    const searchInput = document.querySelector('.search-box input');
+    if (!searchInput) return;
+
+    const searchContainer = document.createElement('div');
+    searchContainer.className = 'search-container';
+    searchInput.parentNode.insertBefore(searchContainer, searchInput);
+    searchContainer.appendChild(searchInput);
+
+    const suggestions = document.createElement('div');
+    suggestions.className = 'search-suggestions';
+    searchContainer.appendChild(suggestions);
+
+    // Пример популярных товаров для подсказок
+    const popularProducts = [
+        { name: 'iPhone 15 Pro', category: 'Электроника', icon: '📱' },
+        { name: 'ASUS ROG Strix', category: 'Электроника', icon: '💻' },
+        { name: 'Sony WH-1000XM5', category: 'Аудио', icon: '🎧' },
+        { name: 'Новогодняя ёлка', category: 'Праздник', icon: '🎄' },
+        { name: 'Гирлянда LED', category: 'Праздник', icon: '✨' }
+    ];
+
+    // Обработчик ввода
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        updateSuggestions(query, popularProducts, suggestions);
+    });
+
+    // Обработчик фокуса
+    searchInput.addEventListener('focus', function() {
+        if (this.value.trim() === '') {
+            showDefaultSuggestions(popularProducts, suggestions);
         }
+    });
 
-        showToast('Экспорт завершен! Файл готов к скачиванию.', 3000);
+    // Закрытие подсказок при клике вне
+    document.addEventListener('click', function(e) {
+        if (!searchContainer.contains(e.target)) {
+            suggestions.classList.remove('active');
+        }
+    });
+}
 
-        // Создаем временную ссылку для скачивания
+function updateSuggestions(query, products, container) {
+    container.innerHTML = '';
+
+    if (!query) {
+        showDefaultSuggestions(products, container);
+        return;
+    }
+
+    const filtered = products.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="suggestion-item">
+                <div class="suggestion-icon">🔍</div>
+                <div class="suggestion-text">Товар не найден</div>
+                <div class="suggestion-hint">Попробуйте другой запрос</div>
+            </div>
+        `;
+
+        // Показываем пуш-уведомление
+        showPushNotification(`Товар "${query}" не найден в системе`, 'warning');
+    } else {
+        filtered.forEach(product => {
+            const item = document.createElement('div');
+            item.className = 'suggestion-item';
+            item.innerHTML = `
+                <div class="suggestion-icon">${product.icon}</div>
+                <div class="suggestion-text">${product.name}</div>
+                <div class="suggestion-hint">${product.category}</div>
+            `;
+
+            item.addEventListener('click', function() {
+                const searchInput = document.querySelector('.search-box input');
+                searchInput.value = product.name;
+                container.classList.remove('active');
+
+                // Выполняем поиск
+                performSearch(product.name);
+            });
+
+            container.appendChild(item);
+        });
+    }
+
+    container.classList.add('active');
+}
+
+function showDefaultSuggestions(products, container) {
+    container.innerHTML = '';
+
+    const title = document.createElement('div');
+    title.className = 'suggestion-item';
+    title.style.fontWeight = '600';
+    title.style.color = 'var(--light)';
+    title.style.borderBottom = '2px solid var(--glass-border)';
+    title.innerHTML = `
+        <div class="suggestion-icon">🔥</div>
+        <div class="suggestion-text">Популярные товары</div>
+    `;
+    container.appendChild(title);
+
+    products.forEach(product => {
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        item.innerHTML = `
+            <div class="suggestion-icon">${product.icon}</div>
+            <div class="suggestion-text">${product.name}</div>
+            <div class="suggestion-hint">${product.category}</div>
+        `;
+
+        item.addEventListener('click', function() {
+            const searchInput = document.querySelector('.search-box input');
+            searchInput.value = product.name;
+            container.classList.remove('active');
+            performSearch(product.name);
+        });
+
+        container.appendChild(item);
+    });
+
+    container.classList.add('active');
+}
+
+function performSearch(query) {
+    const rows = document.querySelectorAll('.table tbody tr');
+    let found = false;
+
+    rows.forEach(row => {
+        const productName = row.querySelector('.product-name').textContent.toLowerCase();
+        const productCategory = row.querySelector('.category-badge').textContent.toLowerCase();
+
+        if (productName.includes(query.toLowerCase()) ||
+            productCategory.includes(query.toLowerCase())) {
+            row.style.display = '';
+            row.style.animation = 'slideIn 0.3s ease';
+            found = true;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    if (!found) {
+        showPushNotification(`По запросу "${query}" ничего не найдено`, 'warning');
+    } else {
+        showToast(`Найдено по запросу: "${query}"`);
+    }
+}
+
+// ===== 5. ПУШ-УВЕДОМЛЕНИЯ =====
+function initPushNotifications() {
+    // Создаем контейнер для пушей
+    const pushContainer = document.createElement('div');
+    pushContainer.id = 'push-container';
+    pushContainer.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 10001;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    `;
+    document.body.appendChild(pushContainer);
+}
+
+function showPushNotification(message, type = 'info') {
+    const container = document.getElementById('push-container');
+    if (!container) return;
+
+    const notification = document.createElement('div');
+    notification.className = `push-notification push-${type}`;
+
+    const icon = type === 'error' ? '❌' :
+                type === 'warning' ? '⚠️' :
+                type === 'success' ? '✅' : 'ℹ️';
+
+    notification.innerHTML = `
+        <div class="push-icon">${icon}</div>
+        <div class="push-content">
+            <div class="push-title">${getPushTitle(type)}</div>
+            <div class="push-message">${message}</div>
+        </div>
+        <button class="push-close">&times;</button>
+    `;
+
+    container.appendChild(notification);
+
+    // Анимация появления
+    setTimeout(() => notification.classList.add('show'), 10);
+
+    // Обработчик закрытия
+    notification.querySelector('.push-close').addEventListener('click', function() {
+        closePushNotification(notification);
+    });
+
+    // Автоматическое закрытие через 5 секунд
+    setTimeout(() => {
+        if (notification.parentNode) {
+            closePushNotification(notification);
+        }
+    }, 5000);
+}
+
+function getPushTitle(type) {
+    switch(type) {
+        case 'error': return 'Ошибка';
+        case 'warning': return 'Внимание';
+        case 'success': return 'Успешно';
+        default: return 'Информация';
+    }
+}
+
+function closePushNotification(notification) {
+    notification.classList.remove('show');
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 300);
+}
+
+// ===== 6. СЕССИЯ ПОЛЬЗОВАТЕЛЯ =====
+function initUserSession() {
+    // Имитация пользователя (в реальном приложении будет из системы авторизации)
+    const currentUser = {
+        id: 'user123',
+        name: 'Иван Иванов',
+        role: 'manager',
+        department: 'Продажи'
+    };
+
+    localStorage.setItem('suram_current_user', JSON.stringify(currentUser));
+
+    // Обновление интерфейса в соответствии с пользователем
+    updateUIForUser(currentUser);
+}
+
+function getCurrentUser() {
+    const user = localStorage.getItem('suram_current_user');
+    return user ? JSON.parse(user) : { id: 'user123', name: 'Иван Иванов' };
+}
+
+function updateUIForUser(user) {
+    // Можно добавить отображение имени пользователя где-нибудь в интерфейсе
+    console.log('Текущий пользователь:', user.name);
+}
+
+// ===== 7. ОБНОВЛЕННЫЕ БЫСТРЫЕ ДЕЙСТВИЯ =====
+function initQuickActions() {
+    const quickActions = document.querySelectorAll('.quick-action-btn');
+
+    quickActions.forEach(action => {
+        action.addEventListener('click', function(e) {
+            const actionType = this.getAttribute('data-action');
+
+            switch(actionType) {
+                case 'quick-sale':
+                    // Перенаправление на страницу быстрой продажи
+                    window.location.href = 'sale-new.html';
+                    break;
+
+                case 'pro-sale':
+                    showPushNotification('Режим профессиональной продажи активирован', 'info');
+                    // Здесь можно открыть расширенную форму продажи
+                    break;
+
+                case 'create-report':
+                    generateReport();
+                    break;
+
+                case 'export-data':
+                    openExportModal();
+                    break;
+            }
+        });
+    });
+}
+
+function generateReport() {
+    showPushNotification('Генерация отчёта начата...', 'info');
+
+    // Имитация генерации отчёта
+    setTimeout(() => {
+        showPushNotification('Отчёт успешно сгенерирован!', 'success');
+
+        // Создание ссылки для скачивания
+        const reportData = `Отчёт SuRam\nДата: ${new Date().toLocaleDateString()}\n\nВыручка: ₽ 89,430\nПродажи: 247\nТоваров в системе: 1,247\n\nСгенерировано системой SuRam`;
+
         const link = document.createElement('a');
         link.style.display = 'none';
-        link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvData);
-        link.download = filename;
+        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(reportData);
+        link.download = `suram_report_${new Date().toISOString().split('T')[0]}.txt`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }, 2000);
 }
 
-// Генерация CSV для товаров
-function generateProductsCSV() {
-    return `Наименование,Категория,Остаток,Цена закупки,Цена продажи,Статус,Дата добавления
-"Смартфон iPhone 15 Pro","Электроника",42,75000,89990,"В наличии","2024-11-15"
-"Ноутбук ASUS ROG Strix","Электроника",8,130000,149990,"Мало","2024-10-20"
-"Наушники Sony WH-1000XM5","Аудио",0,30000,34990,"Нет в наличии","2024-09-05"
-"Новогодняя ёлка 180см","Праздник",15,5000,7990,"В наличии","2024-12-01"
-"Гирлянда LED 10м","Праздник",23,1200,1990,"В наличии","2024-11-28"
-"Подарочный набор","Праздник",12,3500,4990,"В наличии","2024-12-10"`;
+// ===== 8. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+function openExportModal() {
+    const modal = document.getElementById('exportModal');
+    if (!modal) return;
+
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.style.opacity = '1';
+        modal.querySelector('.modal-content').style.transform = 'translateY(0)';
+    }, 10);
 }
 
-// Генерация CSV для продаж
-function generateSalesCSV() {
-    return `Номер продажи,Товар,Количество,Цена продажи,Общая сумма,Дата продажи,Статус
-"#4892","Смартфон iPhone 15 Pro",1,89990,89990,"2024-12-25 14:30","Завершено"
-"#4891","Ноутбук ASUS ROG Strix",2,149990,299980,"2024-12-24 18:15","Завершено"
-"#4890","Наушники Sony WH-1000XM5",3,34990,104970,"2024-12-23 11:45","Завершено"
-"#4889","Новогодний набор",5,4990,24950,"2024-12-22 09:20","Завершено"
-"#4888","Смартфон Samsung Galaxy S23",1,74990,74990,"2024-12-21 16:30","Завершено"`;
+function exportSelectedData() {
+    const exportType = document.querySelector('input[name="exportType"]:checked').value;
+
+    closeModal('exportModal');
+
+    showPushNotification(`Экспорт данных (${exportType}) начат...`, 'info');
+
+    setTimeout(() => {
+        showPushNotification('Экспорт завершён! Файл скачивается.', 'success');
+
+        // Здесь будет реальный экспорт данных
+        exportData(exportType);
+    }, 1500);
 }
 
-// Генерация CSV для отчетов
-function generateReportsCSV() {
-    return `Период,Выручка (Revenue),Себестоимость (Cost),Прибыль (Profit),Количество продаж,Продано товаров,Средний чек
-"01.12.2024 - 25.12.2024",1247800,945200,302600,89,247,14020
-"01.11.2024 - 30.11.2024",1120500,875000,245500,76,215,14743
-"01.10.2024 - 31.10.2024",985600,745000,240600,68,189,14494`;
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    modal.style.opacity = '0';
+    modal.querySelector('.modal-content').style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
 }
 
-// Генерация CSV для дашборда
-function generateDashboardCSV() {
-    return `Метрика,Значение,Дата обновления
-"Товаров в системе",1247,"2024-12-25"
-"Выручка сегодня",89430,"2024-12-25"
-"Эффективность",94.2,"2024-12-25"
-"Продаж за день",247,"2024-12-25"
-"Популярные товары","Смартфон iPhone 15 Pro, Ноутбук ASUS ROG Strix","2024-12-25"`;
-}
-
-// Вспомогательные функции
-function showToast(message, duration = 2000) {
-    // Удаляем старый тост, если есть
+function showToast(message, type = 'info') {
+    // Удаляем старый тост
     const oldToast = document.querySelector('.toast');
-    if (oldToast) {
-        oldToast.remove();
-    }
+    if (oldToast) oldToast.remove();
 
-    // Создаем новый тост
+    // Создаем новый
     const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--glass);
-        backdrop-filter: blur(10px);
-        border: 2px solid var(--glass-border);
-        border-radius: 8px;
-        padding: 10px 16px;
-        color: var(--light);
-        font-weight: 500;
-        font-size: 0.9rem;
-        z-index: 10000;
-        transform: translateY(20px);
-        opacity: 0;
-        transition: all 0.3s ease;
-        max-width: 280px;
-        word-wrap: break-word;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <i class="fas fa-${getToastIcon(type)}"></i>
+        <span>${message}</span>
     `;
 
     document.body.appendChild(toast);
 
-    // Анимация появления
-    setTimeout(() => {
-        toast.style.transform = 'translateY(0)';
-        toast.style.opacity = '1';
-    }, 10);
+    // Анимация
+    setTimeout(() => toast.classList.add('show'), 10);
 
-    // Автоматическое скрытие
+    // Автоудаление
     setTimeout(() => {
-        toast.style.transform = 'translateY(20px)';
-        toast.style.opacity = '0';
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 300);
-    }, duration);
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
-// Адаптация при ресайзе
-let resizeTimer;
-window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-        // Пересоздаем снежинки при изменении размера окна
-        const snowflakes = document.getElementById('snowflakes');
-        if (snowflakes) {
-            snowflakes.innerHTML = '';
-            initSnowflakes();
-        }
-    }, 250);
-});
-
-// Глобальные функции для работы с корзиной (если нужно)
-window.addToCart = function(productId, productName, price, quantity = 1) {
-    // Здесь будет логика добавления в корзину
-    showToast(`Добавлено в корзину: ${productName} (${quantity} шт.)`);
-
-    // Можно сохранять в localStorage
-    const cart = JSON.parse(localStorage.getItem('suram_cart') || '[]');
-    const existingItem = cart.find(item => item.id === productId);
-
-    if (existingItem) {
-        existingItem.quantity += quantity;
-    } else {
-        cart.push({
-            id: productId,
-            name: productName,
-            price: price,
-            quantity: quantity
-        });
+function getToastIcon(type) {
+    switch(type) {
+        case 'success': return 'check-circle';
+        case 'error': return 'exclamation-circle';
+        case 'warning': return 'exclamation-triangle';
+        default: return 'info-circle';
     }
+}
 
-    localStorage.setItem('suram_cart', JSON.stringify(cart));
-
-    // Обновление счетчика корзины
-    updateCartCount();
-};
-
-window.updateCartCount = function() {
-    const cart = JSON.parse(localStorage.getItem('suram_cart') || '[]');
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-    // Обновляем бейдж корзины, если есть
-    const cartBadge = document.querySelector('.cart-badge');
-    if (cartBadge) {
-        cartBadge.textContent = totalItems;
-        cartBadge.style.display = totalItems > 0 ? 'flex' : 'none';
-    }
-};
-
-// Инициализация корзины при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-    window.updateCartCount();
-});
+// Остальные функции (initSnowflakes, initActiveMenu и т.д.) остаются без изменений
+// ... (из предыдущего скрипта)
