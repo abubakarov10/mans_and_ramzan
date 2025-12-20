@@ -16,6 +16,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/snow.css' %}">
     <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 </head>
 
@@ -93,7 +94,91 @@
 
 <!-- MAIN -->
 <main class="container">
-    {% block content %}{% endblock %}
+    <div class="main-grid">
+        <section class="dashboard-left">
+            {% block content %}{% endblock %}
+        </section>
+        <aside class="dashboard-sidebar">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="{% url 'sales:create' %}" class="quick-action-btn quick-sale">
+                            <div class="action-icon">⚡</div>
+                            <div>
+                                <div class="action-title">Новая продажа</div>
+                                <div class="action-desc">Оформить продажу</div>
+                            </div>
+                        </a>
+                        <a href="{% url 'products:create' %}" class="quick-action-btn pro-sale">
+                            <div class="action-icon">📦</div>
+                            <div>
+                                <div class="action-title">Добавить товар</div>
+                                <div class="action-desc">Создать позицию</div>
+                            </div>
+                        </a>
+                        <a href="{% url 'reports:profit' %}" class="quick-action-btn create-report">
+                            <div class="action-icon">📈</div>
+                            <div>
+                                <div class="action-title">Отчёт по прибыли</div>
+                                <div class="action-desc">Сформировать отчёт</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card notifications-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bell"></i> Уведомления</h3>
+                    <div class="notifications-header-actions">
+                        <span class="badge">3</span>
+                        <button class="btn-clear-all" type="button" title="Очистить">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="notifications">
+                        <div class="notification new">
+                            <div class="notification-icon">🧾</div>
+                            <div class="notification-content">
+                                <div class="notification-title">Отчёт готов</div>
+                                <div class="notification-desc">Проверьте прибыль за период</div>
+                                <div class="notification-time">Сегодня</div>
+                            </div>
+                            <button class="notification-close" type="button">&times;</button>
+                        </div>
+                        <div class="notification">
+                            <div class="notification-icon">📦</div>
+                            <div class="notification-content">
+                                <div class="notification-title">Новый товар</div>
+                                <div class="notification-desc">Добавлены новые позиции</div>
+                                <div class="notification-time">Вчера</div>
+                            </div>
+                            <button class="notification-close" type="button">&times;</button>
+                        </div>
+                        <div class="notification">
+                            <div class="notification-icon">💬</div>
+                            <div class="notification-content">
+                                <div class="notification-title">Напоминание</div>
+                                <div class="notification-desc">Обновите складские остатки</div>
+                                <div class="notification-time">2 дня назад</div>
+                            </div>
+                            <button class="notification-close" type="button">&times;</button>
+                        </div>
+                    </div>
+                    <div class="notification-controls">
+                        <button class="btn btn-secondary btn-small mark-all-read" type="button">
+                            Отметить прочитанными
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
 </main>
 
 <footer class="footer">

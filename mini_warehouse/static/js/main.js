@@ -45,6 +45,35 @@ function showNotification(message, type = 'info') {
     });
 }
 
+// Снег
+function initSnowflakes() {
+    const container = document.getElementById('snowflakes');
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = '';
+    const snowflakeCount = 40;
+
+    for (let i = 0; i < snowflakeCount; i += 1) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = '❄';
+
+        const size = Math.random() * 0.8 + 0.6;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 6 + 6;
+        const delay = Math.random() * 6;
+
+        snowflake.style.left = `${left}%`;
+        snowflake.style.fontSize = `${size}em`;
+        snowflake.style.animationDuration = `${duration}s`;
+        snowflake.style.animationDelay = `${delay}s`;
+
+        container.appendChild(snowflake);
+    }
+}
+
 // Блюр при скролле
 let lastScroll = 0;
 window.addEventListener('scroll', () => {
@@ -65,6 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Загружаем сохранённую тему
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
+
+    initSnowflakes();
 
     // Назначаем обработчики
     document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
