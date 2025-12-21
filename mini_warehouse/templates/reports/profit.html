@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="report-container">
+        <!-- Заголовок и фильтры -->
+        <div class="page-header">
+            <h1><i class="fas fa-chart-pie"></i> Отчёт по прибыли</h1>
+            <div class="report-period">
+                <i class="fas fa-calendar-alt"></i>
+                Период: {{ form.date_from.value|default:"—" }} - {{ form.date_to.value|default:"—" }}
+            </div>
+        </div>
+
+        <p class="page-subtitle">Анализ выручки, себестоимости и прибыли за выбранный период</p>
+
+        <!-- Фильтры отчёта -->
+        <form method="get" class="sales-filters">
+            <div class="filter-group {% if form.date_from.errors %}has-error{% endif %}">
+                <label class="filter-label">
+                    <i class="fas fa-calendar"></i> Дата с
+                </label>
+                {{ form.date_from }}
+                {{ form.date_from.errors }}
+            </div>
+
+            <div class="filter-group {% if form.date_to.errors %}has-error{% endif %}">
+                <label class="filter-label">
+                    <i class="fas fa-calendar"></i> Дата по
+                </label>
+                {{ form.date_to }}
+                {{ form.date_to.errors }}
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-chart-line"></i> Сформировать отчёт
+                </button>
+                <a class="btn btn-secondary" href="{% url 'reports:profit' %}">
+                    <i class="fas fa-redo"></i> Сбросить
+                </a>
+            </div>
+        </form>
+
+        <!-- Статистика отчёта -->
+        <div class="report-stats">
+            <div class="report-stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-label">Выручка</div>
+                <div class="stat-value revenue">₽ {{ metrics.revenue|floatformat:2 }}</div>
+                <div class="stat-change positive">Σ(quantity × sale_price)</div>
+            </div>
+
+            <div class="report-stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Себестоимость</div>
+                <div class="stat-value cost">₽ {{ metrics.cost|floatformat:2 }}</div>
+                <div class="stat-change negative">Σ(quantity × purchase_price)</div>
+            </div>
+
+            <div class="report-stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-label">Прибыль</div>
+                <div class="stat-value profit">₽ {{ metrics.profit|floatformat:2 }}</div>
+                <div class="stat-change positive">Revenue - Cost</div>
+            </div>
+        </div>
+
+        <!-- Детальная статистика -->
+        <div class="card">
+            <div class="report-table-header">
+                <h3><i class="fas fa-list-alt"></i> Детализация отчёта</h3>
+                <span class="badge">Продаж: {{ metrics.sales_count }}</span>
+            </div>
+
+            <div class="table-wrapper">
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-cube"></i> Показатель</th>
+                                <th><i class="fas fa-hashtag"></i> Значение</th>
+                                <th><i class="fas fa-percentage"></i> Доля</th>
+                                <th><i class="fas fa-chart-bar"></i> График</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="product-info">
+                                        <div class="product-icon">💰</div>
+                                        <div>
+                                            <div class="product-name">Выручка (Revenue)</div>
+                                            <div class="product-sku">Σ(quantity × sale_price)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="price">₽ {{ metrics.revenue|floatformat:2 }}</span></td>
+                                <td><span class="status status-in-stock">100%</span></td>
+                                <td>
+                                    <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 100%; height: 100%; background: linear-gradient(90deg, var(--newyear-gold), var(--newyear-red));"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-info">
+                                        <div class="product-icon">📊</div>
+                                        <div>
+                                            <div class="product-name">Себестоимость (Cost)</div>
+                                            <div class="product-sku">Σ(quantity × purchase_price)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="price">₽ {{ metrics.cost|floatformat:2 }}</span></td>
+                                <td><span class="status status-low">-</span></td>
+                                <td>
+                                    <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 75.7%; height: 100%; background: var(--newyear-blue);"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="product-info">
+                                        <div class="product-icon">📈</div>
+                                        <div>
+                                            <div class="product-name">Прибыль (Profit)</div>
+                                            <div class="product-sku">Revenue - Cost</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="price">₽ {{ metrics.profit|floatformat:2 }}</span></td>
+                                <td><span class="status status-in-stock">-</span></td>
+                                <td>
+                                    <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
+                                        <div style="width: 24.3%; height: 100%; background: var(--newyear-green);"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

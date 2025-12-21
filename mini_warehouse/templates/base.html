@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}🎄 SuRam - Главная{% endblock %}</title>
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/snow.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+</head>
+
+<body>
+
+<div class="newyear-bg">
+    <div class="snowflakes" id="snowflakes"></div>
+</div>
+
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="{% url 'dashboard' %}" class="logo">
+            <div class="logo-icon">🎄</div>
+            <div class="logo-text">SuRam <span class="year">2025</span></div>
+        </a>
+
+        <div class="desktop-menu">
+            <ul class="nav-list">
+                <li><a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="{% url 'products:list' %}" class="nav-link"><i class="fas fa-boxes"></i> Товары</a></li>
+                <li><a href="{% url 'sales:list' %}" class="nav-link"><i class="fas fa-shopping-cart"></i> Продажи</a></li>
+                <li><a href="{% url 'reports:profit' %}" class="nav-link"><i class="fas fa-chart-pie"></i> Отчёты</a></li>
+                <li class="nav-dropdown">
+                    <button class="nav-link nav-dropdown-toggle" type="button">
+                        <i class="fas fa-ellipsis-h"></i> Дополнительно
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="{% url 'about' %}" class="nav-dropdown-link">
+                            <i class="fas fa-info-circle"></i> О нас
+                        </a>
+                        <button class="nav-dropdown-link" data-theme-toggle>
+                            <i class="fas fa-adjust"></i> Light/Dark
+                        </button>
+                    </div>
+                </li>
+                <li>
+                    <a href="{% url 'sales:create' %}" class="btn btn-danger">
+                        <i class="fas fa-bolt"></i> Новая продажа
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="main-grid">
+        <section class="dashboard-left">
+            {% block content %}{% endblock %}
+        </section>
+
+        <aside class="dashboard-sidebar">
+
+            <!-- Быстрые действия -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="{% url 'sales:create' %}" class="quick-action-btn">
+                            <div class="action-icon">⚡</div>
+                            <div>
+                                <div class="action-title">Новая продажа</div>
+                                <div class="action-desc">Оформить продажу</div>
+                            </div>
+                        </a>
+                        <a href="{% url 'products:create' %}" class="quick-action-btn">
+                            <div class="action-icon">📦</div>
+                            <div>
+                                <div class="action-title">Добавить товар</div>
+                                <div class="action-desc">Создать позицию</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Уведомления -->
+            <div class="card notifications-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bell"></i> Уведомления</h3>
+                    <span class="badge">3</span>
+                </div>
+                <div class="card-body">
+                    <div class="notifications">
+                        <div class="notification new">
+                            <div class="notification-icon">🧾</div>
+                            <div class="notification-content">
+                                <div class="notification-title">Отчёт готов</div>
+                                <div class="notification-time">Сегодня</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔥 НОВАЯ ПАНЕЛЬ -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fab fa-github"></i> Репозитории проекта</h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="https://github.com/abubakarov10" target="_blank" class="quick-action-btn">
+                            <div class="action-icon">🛠️</div>
+                            <div>
+                                <div class="action-title">Backend</div>
+                                <div class="action-desc">abubakarov10</div>
+                            </div>
+                        </a>
+
+                        <a href="https://github.com/deem1112" target="_blank" class="quick-action-btn">
+                            <div class="action-icon">🎨</div>
+                            <div>
+                                <div class="action-title">Frontend</div>
+                                <div class="action-desc">deem1112</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+    </div>
+</main>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

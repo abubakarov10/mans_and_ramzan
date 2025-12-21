@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if messages %}
+        <div class="card" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Заголовок -->
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-cart"></i> Продажи</h1>
+        <div class="search-box">
+            <input type="text" class="form-control" placeholder="Поиск продаж...">
+            <button class="btn btn-secondary">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <p class="page-subtitle">История всех продаж · Фильтруйте по датам для анализа</p>
+
+    <!-- Фильтры -->
+    <form method="get" class="sales-filters">
+        <div class="filter-group {% if form.date_from.errors %}has-error{% endif %}">
+            <label class="filter-label">
+                <i class="fas fa-calendar"></i> Дата с
+            </label>
+            {{ form.date_from }}
+            {{ form.date_from.errors }}
+        </div>
+
+        <div class="filter-group {% if form.date_to.errors %}has-error{% endif %}">
+            <label class="filter-label">
+                <i class="fas fa-calendar"></i> Дата по
+            </label>
+            {{ form.date_to }}
+            {{ form.date_to.errors }}
+        </div>
+
+        <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-filter"></i> Применить
+            </button>
+            <a class="btn btn-secondary" href="{% url 'sales:list' %}">
+                <i class="fas fa-redo"></i> Сбросить
+            </a>
+        </div>
+    </form>
+
+    <!-- Список продаж -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-history"></i> Последние продажи</h3>
+            <div class="card-actions">
+                <span class="badge">Всего: {{ sales|length }} продаж</span>
+            </div>
+        </div>
+
+        {% for sale in sales %}
+            <div class="sale-list-item">
+                <div class="sale-icon">💰</div>
+                <div class="sale-info">
+                    <div class="sale-number">Продажа #{{ sale.id }}</div>
+                    <div class="sale-product">{{ sale.product.name }}</div>
+                    <div class="sale-date">{{ sale.sold_at|date:"d.m.Y" }}</div>
+                </div>
+                <div class="sale-details">
+                    <div class="sale-quantity">Количество: {{ sale.quantity }} шт.</div>
+                    <div class="sale-amount">₽ {{ sale.total|floatformat:2 }}</div>
+                    <span class="stock-badge stock-good">Завершено</span>
+                </div>
+            </div>
+        {% empty %}
+            <div class="sale-list-item">
+                <div class="sale-info">
+                    <div class="sale-number">Продаж нет</div>
+                    <div class="sale-product">За выбранный период продажи отсутствуют.</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
