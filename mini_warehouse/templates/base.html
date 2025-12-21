@@ -145,5 +145,18 @@
 </main>
 
 <script src="{% static 'js/main.js' %}"></script>
+<script>
+function getCSRFToken() {
+    const name = 'csrftoken';
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) {
+            return cookie.substring(name.length + 1);
+        }
+    }
+    return '';
+}
+</script>
 </body>
 </html>

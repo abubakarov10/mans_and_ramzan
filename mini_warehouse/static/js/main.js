@@ -4,25 +4,15 @@ function toggleTheme() {
     const currentTheme = root.getAttribute('data-theme') || 'dark';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-    // Добавляем класс для плавного перехода
     document.body.classList.add('theme-transition');
-
-    // Меняем тему
     root.setAttribute('data-theme', newTheme);
-
-    // Сохраняем в localStorage
     localStorage.setItem('theme', newTheme);
 
-    // Убираем класс после перехода
-    setTimeout(() => {
-        document.body.classList.remove('theme-transition');
-    }, 500);
+    setTimeout(() => document.body.classList.remove('theme-transition'), 500);
 
-    // Показываем уведомление
     showNotification(`Тема изменена: ${newTheme === 'dark' ? '🌙 Тёмная' : '☀️ Светлая'}`, 'info');
 }
 
-// Показать уведомление
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -31,26 +21,24 @@ function showNotification(message, type = 'info') {
         <span>${message}</span>
         <button class="notification-close">&times;</button>
     `;
-
     document.body.appendChild(notification);
 
-    // Автоудаление через 5 секунд
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
+    setTimeout(() => notification.remove(), 5000);
+    notification.querySelector('.notification-close').addEventListener('click', () => notification.remove());
+}
 
-    // Закрытие по клику
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-    });
+function getCSRFToken() {
+    return document.cookie
+        .split(';')
+        .map(c => c.trim())
+        .find(c => c.startsWith('csrftoken='))
+        ?.split('=')[1];
 }
 
 // Снег
 function initSnowflakes() {
     const container = document.getElementById('snowflakes');
-    if (!container) {
-        return;
-    }
+    if (!container) return;
 
     container.innerHTML = '';
     const snowflakeCount = 40;
@@ -74,200 +62,141 @@ function initSnowflakes() {
     }
 }
 
-// Блюр при скролле
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    const body = document.body;
-
-    if (currentScroll > 100) {
-        body.classList.add('scrolled');
-    } else {
-        body.classList.remove('scrolled');
-    }
-
-    lastScroll = currentScroll;
-});
-
-// ✅✅✅ ОСТАВЛЯЕМ ТОЛЬКО ОДИН DOMContentLoaded ✅✅✅
-document.addEventListener('DOMContentLoaded', function() {
-    // Загружаем сохранённую тему
+// ✅ ОДИН DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function () {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
 
     initSnowflakes();
 
-    // Назначаем обработчики
+    // Theme toggles
     document.querySelectorAll('[data-theme-toggle]').forEach((toggle) => {
         toggle.addEventListener('click', toggleTheme);
     });
 
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileDrawer = document.getElementById('mobileDrawer');
-
-    if (menuToggle && mobileDrawer) {
-        menuToggle.addEventListener('click', () => {
-            const isOpen = mobileDrawer.classList.toggle('is-open');
-            menuToggle.setAttribute('aria-expanded', String(isOpen));
-        });
-
-        mobileDrawer.addEventListener('click', (event) => {
-            const target = event.target;
-            if (target.closest('a') || target.closest('button')) {
-                mobileDrawer.classList.remove('is-open');
-                menuToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        document.addEventListener('click', (event) => {
-            if (!mobileDrawer.classList.contains('is-open')) {
-                return;
-            }
-
-            if (!mobileDrawer.contains(event.target) && !menuToggle.contains(event.target)) {
-                mobileDrawer.classList.remove('is-open');
-                menuToggle.setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
-
-    const dropdownToggles = document.querySelectorAll('.nav-dropdown-toggle');
-    dropdownToggles.forEach((toggle) => {
-        toggle.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const dropdown = toggle.closest('.nav-dropdown');
-            const isOpen = dropdown.classList.toggle('is-open');
-            toggle.setAttribute('aria-expanded', String(isOpen));
+    // ✅ Dropdown "Дополнительно"
+    document.querySelectorAll('.nav-dropdown-toggle').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = btn.closest('.nav-dropdown');
+            dropdown.classList.toggle('is-open');
         });
     });
 
     document.addEventListener('click', () => {
-        document.querySelectorAll('.nav-dropdown.is-open').forEach((dropdown) => {
-            dropdown.classList.remove('is-open');
-            dropdown.querySelector('.nav-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
-        });
+        document.querySelectorAll('.nav-dropdown.is-open').forEach((d) => d.classList.remove('is-open'));
     });
 
-    // Анимация для карточек при загрузке
-    const cards = document.querySelectorAll('.card, .stat-card');
-    cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        card.classList.add('fade-in');
-    });
-
-    // ✅✅✅ ШАГ 1 — Быстрая панель добавления товара ✅✅✅
+    // ✅ Панель добавления товара
     const addPanel = document.getElementById('addProductPanel');
     const openAddPanelBtn = document.getElementById('openAddPanelBtn');
     const closePanelBtns = document.querySelectorAll('#addProductPanel .close-panel-btn');
     const addProductBtn = document.getElementById('addProductBtn');
 
-    // Открыть панель
     if (openAddPanelBtn && addPanel) {
-        openAddPanelBtn.addEventListener('click', () => {
-            addPanel.classList.add('open');
-        });
+        openAddPanelBtn.addEventListener('click', () => addPanel.classList.add('open'));
     }
 
-    // Закрыть панель (крестик и "Отмена")
-    if (addPanel && closePanelBtns.length) {
-        closePanelBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                addPanel.classList.remove('open');
-            });
-        });
-    }
-
-    // Закрыть по клику вне панели
-    document.addEventListener('click', (event) => {
-        if (!addPanel || !addPanel.classList.contains('open')) return;
-
-        const clickedInside = event.target.closest('#addProductPanel');
-        const clickedOpenBtn = event.target.closest('#openAddPanelBtn');
-
-        if (!clickedInside && !clickedOpenBtn) {
-            addPanel.classList.remove('open');
-        }
+    closePanelBtns.forEach((btn) => {
+        btn.addEventListener('click', () => addPanel.classList.remove('open'));
     });
 
-    // Закрыть по Escape
-    document.addEventListener('keydown', (event) => {
-        if (!addPanel || !addPanel.classList.contains('open')) return;
-        if (event.key === 'Escape') {
-            addPanel.classList.remove('open');
-        }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') addPanel?.classList.remove('open');
     });
 
-    // Нажатие "Добавить товар" (пока демо)
+    // ✅ Реальное добавление товара в БД через AJAX
     if (addProductBtn) {
-        addProductBtn.addEventListener('click', () => {
+        addProductBtn.addEventListener('click', async () => {
             const name = document.getElementById('productName')?.value?.trim();
             const category = document.getElementById('productCategory')?.value?.trim();
+            const stock = document.getElementById('productStock')?.value;
+            const sale_price = document.getElementById('productPrice')?.value;
 
-            if (!name || !category) {
-                showNotification('Заполни название и категорию 🙂', 'error');
+            if (!name || !category || !stock || !sale_price) {
+                showNotification('Заполни все поля', 'error');
                 return;
             }
 
-            showNotification(`Товар “${name}” добавлен (демо) ✅`, 'success');
-            addPanel.classList.remove('open');
-        });
-    }
-
-        // ✅✅✅ ШАГ 2 — УВЕДОМЛЕНИЯ (исправлено) ✅✅✅
-    const notificationsCard = document.querySelector('.notifications-card');
-
-    if (notificationsCard) {
-        const notificationsList = notificationsCard.querySelector('.notifications');
-        const badge = notificationsCard.querySelector('.notifications-header-actions .badge');
-        const clearAllBtn = document.getElementById('clearAllNotificationsBtn');
-        const markAllReadBtn = document.getElementById('markAllReadBtn');
-
-        function updateBadgeCount() {
-            if (!badge || !notificationsList) return;
-            const count = notificationsList.querySelectorAll('.notification').length;
-            badge.textContent = String(count);
-        }
-
-        // ✅ Закрытие ОДНОГО уведомления (крестик)
-        notificationsCard.addEventListener('click', (e) => {
-            const closeBtn = e.target.closest('.notification-close');
-            if (!closeBtn) return;
-
-            // ВАЖНО: удаляем только уведомления внутри блока notifications
-            const item = closeBtn.closest('.notifications .notification');
-            if (!item) return;
-
-            item.remove();
-            updateBadgeCount();
-        });
-
-        // ✅ Отметить все прочитанными
-        if (markAllReadBtn) {
-            markAllReadBtn.addEventListener('click', () => {
-                if (!notificationsList) return;
-
-                notificationsList.querySelectorAll('.notification.new').forEach((n) => {
-                    n.classList.remove('new');
+            try {
+                const resp = await fetch('/products/quick-add/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: new URLSearchParams({ name, category, stock, sale_price }),
                 });
 
-                showNotification('Все уведомления отмечены прочитанными ✅', 'success');
-            });
-        }
+                const data = await resp.json();
+                if (!resp.ok || !data.ok) {
+                    showNotification(data.error || 'Ошибка при добавлении товара', 'error');
+                    return;
+                }
 
-        // ✅ Очистить все уведомления
-        if (clearAllBtn) {
-            clearAllBtn.addEventListener('click', () => {
-                if (!notificationsList) return;
+                // ✅ Добавляем строку в таблицу на главной сразу
+                const tbody = document.getElementById('popularProductsTbody');
+                if (tbody) {
+                    const p = data.product;
 
-                notificationsList.innerHTML = '';
-                updateBadgeCount();
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-product-id', p.id);
 
-                showNotification('Уведомления очищены 🧹', 'info');
-            });
-        }
+                    const statusHtml = Number(p.stock) > 0
+                        ? `<span class="status status-in-stock">В наличии</span>`
+                        : `<span class="status status-out">Нет в наличии</span>`;
 
-        // ✅ Первичное обновление бейджа
-        updateBadgeCount();
+                    tr.innerHTML = `
+                        <td>
+                            <div class="product-info">
+                                <div class="product-icon">📦</div>
+                                <div>
+                                    <div class="product-name">${p.name}</div>
+                                    <div class="product-sku">ID: ${p.id}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="category-badge">${p.category || '—'}</span></td>
+                        <td><span class="stock-count">${p.stock} шт.</span></td>
+                        <td><span class="price">₽ ${Math.round(p.sale_price)}</span></td>
+                        <td>${statusHtml}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a class="btn-icon btn-edit" href="/products/${p.id}/edit/">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="/products/${p.id}/delete/" method="post" style="display:inline;">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="${getCSRFToken()}">
+                                    <button class="btn-icon btn-delete" type="submit">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    `;
+
+                    tbody.prepend(tr);
+                }
+
+                // ✅ Обновляем метрику "товаров в системе" на +1
+                const metricProducts = document.getElementById('metricProductsCount');
+                if (metricProducts) {
+                    const current = parseInt(metricProducts.textContent || '0', 10);
+                    metricProducts.textContent = String(current + 1);
+                }
+
+                showNotification(`Товар “${name}” добавлен ✅`, 'success');
+                addPanel.classList.remove('open');
+
+                // сброс полей
+                document.getElementById('productName').value = '';
+                document.getElementById('productCategory').value = '';
+                document.getElementById('productStock').value = '10';
+                document.getElementById('productPrice').value = '1000';
+
+            } catch (err) {
+                showNotification('Ошибка сети при добавлении товара', 'error');
+            }
+        });
     }
-
-}); // ← ВОТ ЭТА СТРОКА ДОЛЖНА ОСТАТЬСЯ САМОЙ ПОСЛЕДНЕЙ
+});
